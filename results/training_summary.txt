@@ -1,0 +1,29 @@
+================================================================================
+ECG CLASSIFICATION TRAINING SUMMARY (EMA + REDUCED AUGMENTATION)
+================================================================================
+
+Model: ECG_Classifier
+Input size: 512x512
+Number of classes: 5
+Classes: NORM, STTC, MI, CD, HYP
+
+Training Configuration:
+  Epochs: 100
+  Batch size: 16
+  Base learning rate: 0.0002 (reduced)
+  LR schedule: Warmup (5 epochs) + Cosine decay
+  Optimizer: AdamW (weight_decay=0.0005)
+  Gradient clipping: 1.0
+  Label smoothing: 0.05 (reduced)
+  Class weights: Enabled
+  Augmentation: Reduced intensity (ECG-appropriate)
+  EMA: Enabled (decay=0.999)
+  SWA: Enabled (start_epoch=30)
+
+Final Results:
+  Validation Loss: 3.1346
+  Validation Accuracy: 0.3501
+  Validation Macro F1: 0.2856
+
+Best model saved to: /home/vivaswan/DL/nag_proj/results/models/best_model.h5
+Final model saved to: /home/vivaswan/DL/nag_proj/results/models/final_model.h5

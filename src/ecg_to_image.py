@@ -343,13 +343,13 @@ def process_single_record(args):
                 for window_idx, window_signal in enumerate(windows):
                     img_output_path = None
                     if output_dir:
-                        img_filename = f"{row.name}_w{window_idx}_{row['moody_class']}.{config.IMG_FORMAT}"
+                        img_filename = f"{row.name}_w{window_idx}_{row['diagnostic_class']}.{config.IMG_FORMAT}"
                         img_output_path = os.path.join(output_dir, img_filename)
                     
                     img_array = ecg_to_image_converter(window_signal, fs, img_output_path, return_array=True)
                     
                     if img_array is not None:
-                        label_idx = label_encoder[row['moody_class']]
+                        label_idx = label_encoder[row['diagnostic_class']]
                         label_onehot = np.zeros(config.NUM_CLASSES)
                         label_onehot[label_idx] = 1
                         results.append((img_array, label_onehot))
@@ -393,7 +393,7 @@ def batch_convert_ecgs(df, data_dir, output_dir=None, max_samples=None):
                 if signal is not None:
                     img_output_path = None
                     if output_dir:
-                        img_filename = f"{row.name}_{row['moody_class']}.{config.IMG_FORMAT}"
+                        img_filename = f"{row.name}_{row['diagnostic_class']}.{config.IMG_FORMAT}"
                         img_output_path = os.path.join(output_dir, img_filename)
                     
                     img_array = ecg_to_image_converter(signal, fs, img_output_path, return_array=True)
@@ -401,7 +401,7 @@ def batch_convert_ecgs(df, data_dir, output_dir=None, max_samples=None):
                     if img_array is not None:
                         images.append(img_array)
                         
-                        label_idx = label_encoder[row['moody_class']]
+                        label_idx = label_encoder[row['diagnostic_class']]
                         label_onehot = np.zeros(config.NUM_CLASSES)
                         label_onehot[label_idx] = 1
                         labels.append(label_onehot)
@@ -466,7 +466,7 @@ def batch_convert_ecgs_with_progress(df, data_dir, output_dir=None, max_samples=
                 if signal is not None:
                     img_output_path = None
                     if output_dir:
-                        img_filename = f"{row.name}_{row['moody_class']}.{config.IMG_FORMAT}"
+                        img_filename = f"{row.name}_{row['diagnostic_class']}.{config.IMG_FORMAT}"
                         img_output_path = os.path.join(output_dir, img_filename)
                     
                     img_array = ecg_to_image_converter(signal, fs, img_output_path, return_array=True)
@@ -474,7 +474,7 @@ def batch_convert_ecgs_with_progress(df, data_dir, output_dir=None, max_samples=
                     if img_array is not None:
                         images.append(img_array)
                         
-                        label_idx = label_encoder[row['moody_class']]
+                        label_idx = label_encoder[row['diagnostic_class']]
                         label_onehot = np.zeros(config.NUM_CLASSES)
                         label_onehot[label_idx] = 1
                         labels.append(label_onehot)
@@ -565,7 +565,7 @@ def batch_convert_ecgs_multi_window(df, data_dir, output_dir=None, max_samples=N
                     for window_idx, window_signal in enumerate(windows):
                         img_output_path = None
                         if output_dir:
-                            img_filename = f"{row.name}_w{window_idx}_{row['moody_class']}.{config.IMG_FORMAT}"
+                            img_filename = f"{row.name}_w{window_idx}_{row['diagnostic_class']}.{config.IMG_FORMAT}"
                             img_output_path = os.path.join(output_dir, img_filename)
                         
                         img_array = ecg_to_image_converter(window_signal, fs, img_output_path, return_array=True)
@@ -573,7 +573,7 @@ def batch_convert_ecgs_multi_window(df, data_dir, output_dir=None, max_samples=N
                         if img_array is not None:
                             images.append(img_array)
                             
-                            label_idx = label_encoder[row['moody_class']]
+                            label_idx = label_encoder[row['diagnostic_class']]
                             label_onehot = np.zeros(config.NUM_CLASSES)
                             label_onehot[label_idx] = 1
                             labels.append(label_onehot)

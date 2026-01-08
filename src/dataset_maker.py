@@ -1,167 +1,78 @@
-"""
-Dataset preparation module for PTB-XL ECG data
-Handles metadata loading, SCP code processing, and train/val splitting
-"""
+# src/dataset_maker.py
 
 import os
+import ast
 import pandas as pd
-import numpy as np
-from sklearn.model_selection import train_test_split
-from src import config
+from sklearn.model_selection import GroupShuffleSplit
+
+try:
+    from src import config_pytorch as cfg
+except:
+    from src import config as cfg
 
 
-def load_ptbxl_metadata():
-    """
-    Load PTB-XL metadata CSV file
-    
-    Returns:
-        pd.DataFrame: Metadata with patient info and diagnostic codes
-        str: Path to the loaded metadata file
-    """
-    print("Loading PTB-XL metadata...")
-    
-    # Try multiple possible paths
-    metadata_path = None
-    for path in config.POSSIBLE_METADATA_PATHS:
-        if os.path.exists(path):
-            metadata_path = path
-            break
-    
-    if metadata_path is None:
-        # Print directory structure for debugging
-        print("\nAvailable files in data directory:")
-        for root, dirs, files in os.walk(config.DATA_DIR):
-            level = root.replace(config.DATA_DIR, '').count(os.sep)
-            indent = ' ' * 2 * level
-            print(f"{indent}{os.path.basename(root)}/")
-            subindent = ' ' * 2 * (level + 1)
-            for file in files[:5]:
-                print(f"{subindent}{file}")
-            if len(files) > 5:
-                print(f"{subindent}... and {len(files)-5} more files")
-        raise FileNotFoundError("Cannot find ptbxl_database.csv in any expected location")
-    
-    print(f"✓ Found metadata at: {metadata_path}")
-    df = pd.read_csv(metadata_path)
-    print(f"✓ Total records in PTB-XL: {len(df)}")
-    
-    return df, metadata_path
+def load_metadata():
+    """Load ptbxl_database.csv + scp_statements.csv and build mapping."""
+    meta_path = cfg.POSSIBLE_METADATA_PATHS[0]
+    df = pd.read_csv(meta_path)
+
+    scp_path = meta_path.replace("ptbxl_database.csv", "scp_statements.csv")
+    scp_df = pd.read_csv(scp_path)
+
+    # In your dataset: "Unnamed: 0" == scp_code
+    scp_map = dict(zip(scp_df["Unnamed: 0"], scp_df["diagnostic_class"]))
+
+    return df, scp_map
 
 
-def map_scp_to_moody(scp_codes_dict):
-    """
-    Map PTB-XL SCP codes to MOODY class
-    
-    Args:
-        scp_codes_dict (dict): Dictionary of SCP codes with confidence scores
-        
-    Returns:
-        str or None: Mapped MOODY class name
-    """
-    if not scp_codes_dict:
+def parse_scp_codes(s):
+    if pd.isna(s):
+        return {}
+    try:
+        return ast.literal_eval(s)
+    except:
+        return {}
+
+
+def dominant_scp_to_class(scp_dict, scp_map):
+    if not scp_dict:
         return None
-    
-    # Get the primary code (highest confidence)
-    main_code = max(scp_codes_dict.items(), key=lambda x: x[1])[0]
-    
-    # Check primary mapping
-    for moody_class, scp_list in config.SCP_TO_MOODY_MAPPING.items():
-        if main_code in scp_list:
-            return moody_class
-    
-    # Fallback: check secondary codes
-    all_codes = list(scp_codes_dict.keys())
-    for code in all_codes:
-        for moody_class, scp_list in config.SCP_TO_MOODY_MAPPING.items():
-            if code in scp_list:
-                return moody_class
-    
-    # Final fallback: random assignment to maintain balance
-    return np.random.choice(config.CLASS_NAMES)
+    dominant = max(scp_dict, key=lambda k: scp_dict[k])
+    return scp_map.get(dominant, None)
 
 
-def process_scp_codes(df, max_samples_per_class=3000):
-    """
-    Process SCP codes and balance dataset
-    
-    Args:
-        df (pd.DataFrame): Raw metadata DataFrame
-        max_samples_per_class (int): Maximum samples to keep per class
-        
-    Returns:
-        pd.DataFrame: Processed and balanced DataFrame with 'moody_class' column
-    """
-    print(f"\nProcessing SCP codes (max {max_samples_per_class} per class)...")
-    
-    # Parse SCP codes from string to dict
-    df['scp_codes'] = df['scp_codes'].apply(eval)
-    
-    # Map to MOODY classes
-    df['moody_class'] = df['scp_codes'].apply(map_scp_to_moody)
-    df = df[df['moody_class'].notna()]
-    
-    print(f"✓ Found {len(df)} samples with valid MOODY classifications")
-    
-    # Balance classes
-    balanced_dfs = []
-    for class_name in config.CLASS_NAMES:
-        class_df = df[df['moody_class'] == class_name]
-        sampled = class_df.sample(
-            n=min(len(class_df), max_samples_per_class),
-            random_state=config.RANDOM_SEED
-        )
-        balanced_dfs.append(sampled)
-        print(f"  {class_name}: {len(sampled)} samples selected")
-    
-    df_balanced = pd.concat(balanced_dfs, ignore_index=True)
-    
-    print(f"\n✓ Final balanced dataset: {len(df_balanced)} samples")
-    return df_balanced
+def process_and_split(seed=None, test_size=None, balance_train=False):
+    seed = seed or cfg.RANDOM_SEED
+    test_size = test_size or cfg.TEST_SIZE
 
+    df, scp_map = load_metadata()
 
-def prepare_dataset():
-    """
-    Main function to prepare train/validation datasets
-    
-    Returns:
-        tuple: (train_df, val_df, label_encoder)
-            - train_df: Training DataFrame
-            - val_df: Validation DataFrame
-            - label_encoder: Dictionary mapping class names to indices
-    """
-    # Load metadata
-    df_raw, _ = load_ptbxl_metadata()
-    
-    # Process and balance
-    df_processed = process_scp_codes(df_raw, config.MAX_SAMPLES_PER_CLASS)
-    
-    # Create label encoder
-    label_encoder = {label: idx for idx, label in enumerate(config.CLASS_NAMES)}
-    
-    # Train/validation split
-    train_df, val_df = train_test_split(
-        df_processed,
-        test_size=config.TEST_SIZE,
-        stratify=df_processed['moody_class'],
-        random_state=config.RANDOM_SEED
+    df["scp_parsed"] = df["scp_codes"].apply(parse_scp_codes)
+    df["diagnostic_class"] = df["scp_parsed"].apply(
+        lambda d: dominant_scp_to_class(d, scp_map)
     )
-    
-    print(f"\n✓ Dataset split:")
-    print(f"  Training samples: {len(train_df)}")
-    print(f"  Validation samples: {len(val_df)}")
-    
-    # Print class distribution
-    print("\nTraining class distribution:")
-    for class_name in config.CLASS_NAMES:
-        count = len(train_df[train_df['moody_class'] == class_name])
-        print(f"  {class_name}: {count}")
-    
+
+    df = df[df["diagnostic_class"].notna()].reset_index(drop=True)
+
+    print("\nLabel counts:")
+    print(df["diagnostic_class"].value_counts())
+
+    # Encode class
+    label_encoder = {cls: i for i, cls in enumerate(cfg.CLASS_NAMES)}
+    df["label"] = df["diagnostic_class"].map(label_encoder)
+
+    # Patient-level split via strat_fold
+    if "strat_fold" in df.columns:
+        train_df = df[df["strat_fold"] != 10].copy()
+        val_df = df[df["strat_fold"] == 10].copy()
+    else:
+        splitter = GroupShuffleSplit(test_size=test_size, n_splits=1, random_state=seed)
+        tr, va = next(splitter.split(df, groups=df["patient_id"]))
+        train_df, val_df = df.iloc[tr].copy(), df.iloc[va].copy()
+
+    print("\nTrain:", len(train_df))
+    print("Val:", len(val_df))
+    print(train_df["diagnostic_class"].value_counts())
+    print(val_df["diagnostic_class"].value_counts())
+
     return train_df, val_df, label_encoder
-
-
-if __name__ == "__main__":
-    # Test the module
-    train_df, val_df, encoder = prepare_dataset()
-    print(f"\n✓ Dataset preparation successful")
-    print(f"  Train shape: {train_df.shape}")
-    print(f"  Val shape: {val_df.shape}")
