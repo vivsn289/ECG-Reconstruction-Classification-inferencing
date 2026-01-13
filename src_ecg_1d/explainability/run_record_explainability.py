@@ -99,7 +99,9 @@ def main():
     records = loader.get_records()
 
     print("[INFO] Searching for most abnormal record...")
-    record_idx = find_most_abnormal_record(model, loader, records)
+    #record_idx = find_most_abnormal_record(model, loader, records)
+    record_idx = 5020   # pick any valid index
+
     print(f"[INFO] Selected abnormal record index: {record_idx}")
 
     record = records[record_idx]
@@ -161,6 +163,11 @@ def main():
 
     global_ig -= global_ig.min()
     global_ig /= (global_ig.max() + 1e-8)
+    # ---- STEP 2: Top-K IG regions ----
+    K = 90  # keep top 10%
+    threshold = np.percentile(global_ig, K)
+    ig_topk = (global_ig >= threshold).astype(float)
+
 
     # ---------------- Prediction ----------------
     probs = torch.softmax(best_logits, dim=1)
@@ -172,12 +179,61 @@ def main():
     print(f"  Probabilities: {probs.cpu().numpy()}")
 
     # ---------------- Visualization ----------------
+    import matplotlib.pyplot as plt
+    import os
+    os.makedirs("visuals",exist_ok=True)
+
+# ---- Plot IG separately ----
+    plt.figure(figsize=(12, 3))
+    plt.plot(global_ig, color="red", linewidth=2)
+    plt.title("Integrated Gradients over Time")
+    plt.xlabel("Time (samples)")    
+    plt.ylabel("IG importance")
+    plt.grid(alpha=0.3)
+    plt.tight_layout()
+    plt.savefig("visuals/ig_signal.png", dpi=300, bbox_inches="tight")
+    plt.close()
+
     plot_ecg_with_attention(
+    ecg_signal=ecg,
+    attention=ig_topk,
+    lead_idx=0,
+    title="Top 10% Integrated Gradients Regions",
+    
+)
+    plt.savefig("visuals/attention_viz_mi_case.png", dpi=300, bbox_inches="tight")
+    plt.close()
+
+    import matplotlib.pyplot as plt
+
+    fig, ax1 = plt.subplots(figsize=(12, 4))
+
+
+
+# ECG
+    ax1.plot(ecg[0], color="black", linewidth=1)
+    ax1.set_xlabel("Time (samples)")
+    ax1.set_ylabel("ECG amplitude", color="black")
+
+# IG on secondary axis
+    ax2 = ax1.twinx()
+    ax2.plot(global_ig, color="red", alpha=0.6, linewidth=2)
+    ax2.set_ylabel("IG importance", color="red")
+
+    plt.title(f"ECG + Integrated Gradients ({LABEL_DECODER[pred_class]})")
+    plt.tight_layout()
+    
+    plt.savefig("visuals/ecg_ig_overlay.png", dpi=300, bbox_inches="tight")
+    plt.close()
+
+
+
+    """plot_ecg_with_attention(
         ecg_signal=ecg,
         attention=global_ig,
         lead_idx=0,
         title="INTEGRATED GRADIENTS (baseline = per-channel mean ECG)",
-    )
+    )"""
 
 
 if __name__ == "__main__":
