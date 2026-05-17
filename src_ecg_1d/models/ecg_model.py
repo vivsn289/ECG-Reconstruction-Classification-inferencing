@@ -8,10 +8,7 @@ from src_ecg_1d.models.transformer import ECGTransformer
 
 
 class ECGClassifier1D(nn.Module):
-    """
-    Full ECG classification model:
-    CNN + ECA backbone → Transformer → Global pooling → Classifier
-    """
+
 
     def __init__(
         self,
@@ -24,7 +21,6 @@ class ECGClassifier1D(nn.Module):
     ):
         super().__init__()
 
-        # CNN feature extractor
         self.backbone = ECGCNNBackbone(in_channels=in_channels)
 
         # Transformer for temporal reasoning
@@ -42,30 +38,21 @@ class ECGClassifier1D(nn.Module):
         )
 
     def forward(self, x, return_attention=False):
-        """
-        Args:
-            x: ECG tensor (N, 12, L)
-            return_attention: whether to return attention maps
 
-        Returns:
-            logits: (N, num_classes)
-            attentions (optional): list of attention tensors
-        """
         # CNN backbone
-        x = self.backbone(x)          # (N, C, T)
+        x = self.backbone(x)       
 
         # Prepare for transformer
-        x = x.permute(0, 2, 1)        # (N, T, C)
+        x = x.permute(0, 2, 1)        
 
         if return_attention:
             x, attentions = self.transformer(x, return_attention=True)
         else:
             x = self.transformer(x)
 
-        # Global average pooling over time
-        x = x.mean(dim=1)             # (N, C)
 
-        # Classification
+        x = x.mean(dim=1)     
+
         logits = self.classifier(x)
 
         if return_attention:

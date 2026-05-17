@@ -10,19 +10,7 @@ def integrated_gradients(
     baseline=None,
     steps=50,
 ):
-    """
-    Compute Integrated Gradients for ECG input.
 
-    Args:
-        model: trained ECGClassifier1D
-        x (Tensor): (1, C, L)
-        target_class (int)
-        baseline (Tensor): same shape as x
-        steps (int)
-
-    Returns:
-        attributions (Tensor): (C, L)
-    """
     model.eval()
 
     if baseline is None:

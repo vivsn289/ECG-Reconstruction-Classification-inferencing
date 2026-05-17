@@ -6,14 +6,12 @@ import torch.nn.functional as F
 
 
 class MultiHeadSelfAttention(nn.Module):
-    """
-    Multi-head self-attention for temporal ECG features.
-    """
+
 
     def __init__(self, embed_dim, num_heads, dropout=0.1):
         super().__init__()
 
-        assert embed_dim % num_heads == 0, "embed_dim must be divisible by num_heads"
+        assert embed_dim % num_heads == 0
 
         self.embed_dim = embed_dim
         self.num_heads = num_heads
@@ -25,15 +23,7 @@ class MultiHeadSelfAttention(nn.Module):
         self.dropout = nn.Dropout(dropout)
 
     def forward(self, x, return_attention=False):
-        """
-        Args:
-            x: (N, T, C)
-            return_attention: whether to return attention weights
-
-        Returns:
-            out: (N, T, C)
-            attn (optional): (N, heads, T, T)
-        """
+ 
         N, T, C = x.shape
 
         qkv = self.qkv(x)  # (N, T, 3C)
@@ -58,9 +48,7 @@ class MultiHeadSelfAttention(nn.Module):
 
 
 class TransformerEncoderBlock(nn.Module):
-    """
-    Single Transformer encoder block (pre-norm).
-    """
+
 
     def __init__(self, embed_dim, num_heads, mlp_ratio=4, dropout=0.1):
         super().__init__()
@@ -79,14 +67,7 @@ class TransformerEncoderBlock(nn.Module):
         )
 
     def forward(self, x, return_attention=False):
-        """
-        Args:
-            x: (N, T, C)
-
-        Returns:
-            x: (N, T, C)
-            attn (optional)
-        """
+  
         if return_attention:
             attn_out, attn = self.attn(self.norm1(x), return_attention=True)
             x = x + attn_out
@@ -99,9 +80,7 @@ class TransformerEncoderBlock(nn.Module):
 
 
 class ECGTransformer(nn.Module):
-    """
-    Stack of Transformer encoder blocks for temporal reasoning.
-    """
+
 
     def __init__(
         self,
@@ -122,14 +101,7 @@ class ECGTransformer(nn.Module):
         ])
 
     def forward(self, x, return_attention=False):
-        """
-        Args:
-            x: (N, T, C)
-
-        Returns:
-            x: (N, T, C)
-            attentions (optional): list of attention maps
-        """
+ 
         attentions = []
 
         for layer in self.layers:

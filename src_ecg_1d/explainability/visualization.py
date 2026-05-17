@@ -5,10 +5,7 @@ import matplotlib.pyplot as plt
 
 
 def upsample_attention(attention, target_length):
-    """
-    Upsample attention from Transformer time steps (T)
-    to ECG signal length (L).
-    """
+
     attention = np.asarray(attention).reshape(-1)
 
     x_old = np.linspace(0, 1, num=len(attention))
@@ -23,40 +20,49 @@ def plot_ecg_with_attention(
     lead_idx=0,
     title=None,
 ):
-    """
-    Plot ECG waveform with upsampled Transformer attention.
-    """
+
+  
     signal = ecg_signal[lead_idx]
     L = signal.shape[0]
+    time = np.arange(L)
 
-    # FORCE UPSAMPLING (this prevents your error)
     attention_up = upsample_attention(attention, L)
 
-    # Safety check
+
     assert attention_up.shape[0] == L, (
         f"Attention length {attention_up.shape[0]} "
         f"does not match signal length {L}"
     )
 
-    time = np.arange(L)
 
+    att_norm = attention_up - attention_up.min()
+    if att_norm.max() > 0:
+        att_norm = att_norm / att_norm.max()
+
+ 
     fig, ax = plt.subplots(figsize=(12, 4))
+
+
     ax.plot(time, signal, color="black", linewidth=1)
 
     ax.fill_between(
         time,
         signal.min(),
         signal.max(),
-        where=attention_up > 0,
+        where=att_norm > 0,
         color="red",
-        alpha=attention_up * 0.6,
+        alpha=0.3 * att_norm,
+        linewidth=0,
+        label="High attribution",
     )
 
     ax.set_xlabel("Time (samples)")
     ax.set_ylabel("Amplitude")
 
-    if title:
+    if title is not None:
         ax.set_title(title)
 
+    ax.legend(loc="upper right")
     plt.tight_layout()
-    plt.show()
+
+    return fig

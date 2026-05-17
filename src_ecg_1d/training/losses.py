@@ -6,9 +6,7 @@ import torch.nn.functional as F
 
 
 class FocalLoss(nn.Module):
-    """
-    Focal Loss for multi-class classification.
-    """
+
 
     def __init__(self, alpha=None, gamma=2.0, reduction="mean"):
         super().__init__()

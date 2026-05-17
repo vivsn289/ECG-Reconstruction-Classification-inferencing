@@ -11,14 +11,7 @@ from src_ecg_1d.training.metrics import (
 
 
 class Trainer1D:
-    """
-    Generic trainer for ECG 1D models.
-    Handles:
-      - training
-      - validation
-      - metrics (accuracy, macro-F1, per-class recall)
-      - AMP (optional)
-    """
+
 
     def __init__(
         self,
@@ -44,9 +37,6 @@ class Trainer1D:
 
         self.scaler = torch.cuda.amp.GradScaler(enabled=self.use_amp)
 
-    # ==================================================
-    # TRAIN ONE EPOCH
-    # ==================================================
     def train_epoch(self, loader):
         self.model.train()
 
@@ -82,9 +72,7 @@ class Trainer1D:
             "accuracy": correct / total_samples,
         }
 
-    # ==================================================
-    # VALIDATION
-    # ==================================================
+
     @torch.no_grad()
     def validate(self, loader):
         self.model.eval()

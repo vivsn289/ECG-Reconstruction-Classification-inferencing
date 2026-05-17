@@ -7,9 +7,7 @@ from src_ecg_1d.models.eca import ECA1D
 
 
 class ConvBlock1D(nn.Module):
-    """
-    Basic 1D convolutional block with ECA and optional downsampling.
-    """
+
 
     def __init__(self, in_channels, out_channels, kernel_size=7, stride=1):
         super().__init__()
@@ -60,9 +58,7 @@ class ConvBlock1D(nn.Module):
 
 
 class ECGCNNBackbone(nn.Module):
-    """
-    1D CNN backbone for ECG signals with ECA.
-    """
+
 
     def __init__(self, in_channels=12):
         super().__init__()
@@ -96,13 +92,6 @@ class ECGCNNBackbone(nn.Module):
         )
 
     def forward(self, x):
-        """
-        Args:
-            x: (N, 12, L)
-
-        Returns:
-            features: (N, 256, T)
-        """
         x = self.stage1(x)
         x = self.stage2(x)
         x = self.stage3(x)

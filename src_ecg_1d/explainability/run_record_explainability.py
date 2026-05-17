@@ -1,16 +1,13 @@
-import torch
+
+
 import numpy as np
+import torch
+import matplotlib.pyplot as plt
 
 from src_ecg_1d.models.ecg_model import ECGClassifier1D
 from src_ecg_1d.data.loaders import PTBXLECGLoader
 from src_ecg_1d.data.windowing import sliding_window
 
-from src_ecg_1d.explainability.visualization import plot_ecg_with_attention
-
-
-# ============================================================
-# CONFIG (MUST MATCH TRAINING)
-# ============================================================
 DATA_ROOT = "data/raw/ptb-xl/ptb-xl-a-large-publicly-available-electrocardiography-dataset-1.0.3"
 CHECKPOINT_PATH = "checkpoints/best_model.pt"
 
@@ -19,7 +16,6 @@ WINDOW_SIZE = 1000
 STRIDE = 500
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-
 
 LABEL_DECODER = {
     0: "NORM",
@@ -30,37 +26,15 @@ LABEL_DECODER = {
 }
 
 
-# ============================================================
-# Utilities
-# ============================================================
-def find_most_abnormal_record(model, loader, records):
-    model.eval()
-    best_idx = None
-    best_score = -1.0
+TEST_RECORD_INDICES = [1000, 5020, 8918]
 
-    for i, record in enumerate(records):
-        ecg = loader.load_ecg(record["record_path"])
-        windows = sliding_window(ecg, WINDOW_SIZE, STRIDE)
 
-        record_score = -1.0
-        for window in windows:
-            x = torch.tensor(window, dtype=torch.float32).unsqueeze(0).to(DEVICE)
-            with torch.no_grad():
-                probs = torch.softmax(model(x), dim=1)
-            record_score = max(record_score, 1.0 - probs[0, 0].item())
+IG_STEPS = 50
 
-        if record_score > best_score:
-            best_score = record_score
-            best_idx = i
-
-    return best_idx
-
+#gradietn step added for weighing channel importance in explainiability
 
 def integrated_gradients(model, x, baseline, target_class, steps=50):
-    """
-    Integrated Gradients for a single window.
-    Returns 1D attribution over time.
-    """
+
     assert x.shape == baseline.shape
 
     total_grad = torch.zeros_like(x)
@@ -77,163 +51,110 @@ def integrated_gradients(model, x, baseline, target_class, steps=50):
         total_grad += x_step.grad.detach()
 
     avg_grad = total_grad / steps
-    ig = (x - baseline) * avg_grad          # (1, C, T)
-    ig_1d = ig.abs()[0].mean(dim=0)          # reduce channels
+    ig = (x - baseline) * avg_grad        
+    ig_1d = ig.abs()[0].mean(dim=0)        
 
     return ig_1d.cpu().numpy()
 
 
-# ============================================================
-# MAIN
-# ============================================================
 def main():
     print(f"[INFO] Using device: {DEVICE}")
 
-    # ------------------ Model ------------------
+
     model = ECGClassifier1D(num_classes=NUM_CLASSES).to(DEVICE)
     model.load_state_dict(torch.load(CHECKPOINT_PATH, map_location=DEVICE))
     model.eval()
 
-    # ------------------ Data -------------------
+
     loader = PTBXLECGLoader(DATA_ROOT, sampling_rate=100)
     records = loader.get_records()
 
-    print("[INFO] Searching for most abnormal record...")
-    #record_idx = find_most_abnormal_record(model, loader, records)
-    record_idx = 5020   # pick any valid index
+    for record_idx in TEST_RECORD_INDICES:
+        print("\n" + "=" * 70)
+        print(f"[INFO] Explaining record index: {record_idx}")
 
-    print(f"[INFO] Selected abnormal record index: {record_idx}")
+        record = records[record_idx]
+        ecg = loader.load_ecg(record["record_path"])
+        true_label = record["label"]
 
-    record = records[record_idx]
-    ecg = loader.load_ecg(record["record_path"])
-    true_label = record["label"]
+        channels, total_length = ecg.shape
 
-    channels, total_length = ecg.shape
-    print(f"[INFO] True label: {true_label}")
-    print(f"[INFO] ECG shape: {ecg.shape}")
+        print(f"[INFO] True label: {true_label}")
+        print(f"[INFO] ECG shape: {ecg.shape}")
 
-    # ---------------- Sliding windows ----------------
-    windows = sliding_window(ecg, WINDOW_SIZE, STRIDE)
+        windows = sliding_window(ecg, WINDOW_SIZE, STRIDE)
 
-    global_ig = np.zeros(total_length, dtype=np.float32)
-    ig_overlap = np.zeros(total_length, dtype=np.float32)
+        global_ig = np.zeros(total_length, dtype=np.float32)
+        ig_overlap = np.zeros(total_length, dtype=np.float32)
 
-    best_logits = None
-    best_abnormal_score = -1.0
+        best_logits = None
+        best_abnormal_score = -1.0
 
-    for i, window in enumerate(windows):
-        start = i * STRIDE
-        end = start + WINDOW_SIZE
 
-        x = torch.tensor(window, dtype=torch.float32).unsqueeze(0).to(DEVICE)
+        for i, window in enumerate(windows):
+            start = i * STRIDE
+            end = start + WINDOW_SIZE
 
-        with torch.no_grad():
-            logits, _ = model(x, return_attention=True)
-            probs = torch.softmax(logits, dim=1)
+            x = torch.tensor(window, dtype=torch.float32).unsqueeze(0).to(DEVICE)
 
-        abnormal_score = 1.0 - probs[0, 0].item()
-        if abnormal_score > best_abnormal_score:
-            best_abnormal_score = abnormal_score
-            best_logits = logits
+            with torch.no_grad():
+                logits, _ = model(x, return_attention=True)
+                probs = torch.softmax(logits, dim=1)
 
-        pred_class = logits.argmax(dim=1).item()
+            abnormal_score = 1.0 - probs[0, 0].item()
+            if abnormal_score > best_abnormal_score:
+                best_abnormal_score = abnormal_score
+                best_logits = logits
 
-        # ---- BASELINE: per-channel mean ECG ----
-        """baseline = torch.tensor(
-            ecg[:, start:end].mean(axis=1, keepdims=True),
-            dtype=torch.float32,
-        ).repeat(1, WINDOW_SIZE).unsqueeze(0).to(DEVICE)"""
+            pred_class = logits.argmax(dim=1).item()
 
-        baseline=torch.zeros_like(x)
 
-        ig_1d = integrated_gradients(
-            model=model,
-            x=x,
-            baseline=baseline,
-            target_class=pred_class,
-            steps=50,
+            baseline = torch.tensor(
+                ecg[:, start:end].mean(axis=1, keepdims=True),
+                dtype=torch.float32,
+            ).repeat(1, WINDOW_SIZE).unsqueeze(0).to(DEVICE)
+
+            ig_1d = integrated_gradients(
+                model=model,
+                x=x,
+                baseline=baseline,
+                target_class=pred_class,
+                steps=IG_STEPS,
+            )
+
+            global_ig[start:end] += ig_1d
+            ig_overlap[start:end] += 1.0
+
+        ig_overlap[ig_overlap == 0] = 1.0
+        global_ig /= ig_overlap
+
+        global_ig -= global_ig.min()
+        global_ig /= (global_ig.max() + 1e-8)
+
+    
+        probs = torch.softmax(best_logits, dim=1)
+        pred_class = probs.argmax(dim=1).item()
+
+        print("[RESULT]")
+        print(f"  Predicted label : {LABEL_DECODER[pred_class]}")
+        print(f"  Probabilities  : {probs.cpu().numpy()}")
+
+        fig, ax1 = plt.subplots(figsize=(12, 4))
+
+        ax1.plot(ecg[0], color="black", linewidth=1)
+        ax1.set_xlabel("Time (samples)")
+        ax1.set_ylabel("ECG amplitude", color="black")
+
+        ax2 = ax1.twinx()
+        ax2.plot(global_ig, color="red", alpha=0.6, linewidth=2)
+        ax2.set_ylabel("IG importance", color="red")
+
+        plt.title(
+            f"ECG + Integrated Gradients "
+            f"(True: {true_label}, Pred: {LABEL_DECODER[pred_class]})"
         )
-
-        global_ig[start:end] += ig_1d
-        ig_overlap[start:end] += 1.0
-
-    # ---------------- Normalize IG ----------------
-    ig_overlap[ig_overlap == 0] = 1.0
-    global_ig /= ig_overlap
-
-    global_ig -= global_ig.min()
-    global_ig /= (global_ig.max() + 1e-8)
-    # ---- STEP 2: Top-K IG regions ----
-    K = 90  # keep top 10%
-    threshold = np.percentile(global_ig, K)
-    ig_topk = (global_ig >= threshold).astype(float)
-
-
-    # ---------------- Prediction ----------------
-    probs = torch.softmax(best_logits, dim=1)
-    pred_class = probs.argmax(dim=1).item()
-
-    print("\n[RECORD-LEVEL RESULT]")
-    print(f"  Ground truth : {true_label}")
-    print(f"  Prediction   : {LABEL_DECODER[pred_class]}")
-    print(f"  Probabilities: {probs.cpu().numpy()}")
-
-    # ---------------- Visualization ----------------
-    import matplotlib.pyplot as plt
-    import os
-    os.makedirs("visuals",exist_ok=True)
-
-# ---- Plot IG separately ----
-    plt.figure(figsize=(12, 3))
-    plt.plot(global_ig, color="red", linewidth=2)
-    plt.title("Integrated Gradients over Time")
-    plt.xlabel("Time (samples)")    
-    plt.ylabel("IG importance")
-    plt.grid(alpha=0.3)
-    plt.tight_layout()
-    plt.savefig("visuals/ig_signal.png", dpi=300, bbox_inches="tight")
-    plt.close()
-
-    plot_ecg_with_attention(
-    ecg_signal=ecg,
-    attention=ig_topk,
-    lead_idx=0,
-    title="Top 10% Integrated Gradients Regions",
-    
-)
-    plt.savefig("visuals/attention_viz_mi_case.png", dpi=300, bbox_inches="tight")
-    plt.close()
-
-    import matplotlib.pyplot as plt
-
-    fig, ax1 = plt.subplots(figsize=(12, 4))
-
-
-
-# ECG
-    ax1.plot(ecg[0], color="black", linewidth=1)
-    ax1.set_xlabel("Time (samples)")
-    ax1.set_ylabel("ECG amplitude", color="black")
-
-# IG on secondary axis
-    ax2 = ax1.twinx()
-    ax2.plot(global_ig, color="red", alpha=0.6, linewidth=2)
-    ax2.set_ylabel("IG importance", color="red")
-
-    plt.title(f"ECG + Integrated Gradients ({LABEL_DECODER[pred_class]})")
-    plt.tight_layout()
-    
-    plt.savefig("visuals/ecg_ig_overlay.png", dpi=300, bbox_inches="tight")
-    plt.close()
-
-
-
-    """plot_ecg_with_attention(
-        ecg_signal=ecg,
-        attention=global_ig,
-        lead_idx=0,
-        title="INTEGRATED GRADIENTS (baseline = per-channel mean ECG)",
-    )"""
+        plt.tight_layout()
+        plt.show()
 
 
 if __name__ == "__main__":
