@@ -68,4 +68,4 @@ EARLY_STOPPING_MIN_DELTA = 5e-4
 LOG_LEVEL = 'INFO'
 LOG_FILE = os.path.join(LOGS_DIR, 'training.log')
 
-print("Config loaded: IMG_SIZE", IMG_SIZE, "BATCH_SIZE", BATCH_SIZE, "BASE_LR", BASE_LR)
+# Note: avoid printing here to prevent noise on every import of this module.

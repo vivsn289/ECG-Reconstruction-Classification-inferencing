@@ -1,1 +1,49 @@
+# Data directories (large raw/processed data should not be tracked in git)
 data/
+
+# Python bytecode
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Build / packaging artifacts
+*.zip
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Jupyter notebook checkpoints
+.ipynb_checkpoints/
+
+# Generated output files (tracked in experiments/ or results/ intentionally
+# if needed, but generally regeneratable)
+training_metrics.csv
+results/logs/
+results_pytorch/logs/
+
+# Model checkpoints (large binaries; keep .pt in results/ only if needed)
+# Uncomment to ignore all checkpoints:
+# checkpoints/
+# *.pt
+# *.h5
+# *.pth
+
+# Virtual environments
+venv/
+env/
+.venv/
+.env/
+
+# IDE / OS artifacts
+.DS_Store
+.vscode/
+.idea/
+*.swp
+*~
+
+# Coverage / test artifacts
+.pytest_cache/
+.coverage
+htmlcov/

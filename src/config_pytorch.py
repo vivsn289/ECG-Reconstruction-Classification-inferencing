@@ -99,7 +99,4 @@ DROPOUT_RATE = 0.2
 # -----------------------------------------
 # Print confirmation
 # -----------------------------------------
-print(
-    f"Config loaded: IMG_SIZE={IMG_SIZE}, "
-    f"BATCH_SIZE={BATCH_SIZE}, BASE_LR={BASE_LR}, USE_AMP={USE_AMP}"
-)
+# Note: avoid printing here to prevent noise on every import of this module.

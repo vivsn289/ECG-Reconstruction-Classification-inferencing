@@ -1,22 +1,41 @@
-# Core Deep Learning (Latest stable versions)
-tensorflow==2.17.1
-keras==3.5.0
+# ECG Research Framework — Dependencies
+#
+# This project has two pipelines:
+#   1. 1D signal pipeline (src_ecg_1d/)  — PyTorch-based, PRIMARY
+#   2. Image pipeline     (src/)          — TensorFlow/Keras + PyTorch, LEGACY
+#
+# Install the 1D pipeline deps with:
+#   pip install -r requirements.txt
+#
+# PyTorch itself must be installed separately to match your CUDA version:
+#   https://pytorch.org/get-started/locally/
+# Example (CUDA 12.1):
+#   pip install torch torchvision --index-url https://download.pytorch.org/whl/cu121
 
-# Data Processing
+# ------------------------------------------------------------------
+# Core: 1D signal pipeline (active)
+# ------------------------------------------------------------------
+
+# Medical waveform reading (WFDB format used by PTB-XL)
+wfdb==4.1.2
+
+# Data science
 numpy==1.26.4
 pandas==2.2.3
 scikit-learn==1.5.2
-
-# Medical Data
-wfdb==4.1.2
-
-# Image Processing
-opencv-python==4.10.0.84
-Pillow==10.4.0
 
 # Visualization
 matplotlib==3.9.2
 seaborn==0.13.2
 
-# Utilities
+# Training utilities
 tqdm==4.66.5
+
+# ------------------------------------------------------------------
+# Core: Image pipeline (legacy — only needed if running src/ pipeline)
+# ------------------------------------------------------------------
+
+tensorflow==2.17.1
+keras==3.5.0
+opencv-python==4.10.0.84
+Pillow==10.4.0
