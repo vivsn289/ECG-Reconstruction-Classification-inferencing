@@ -2,10 +2,10 @@
 #
 # Loss functions for ECG classification.
 #
-# Note: the primary training loop (train_1d.py) uses CrossEntropyLoss with
-# class weights, which is effective for the moderate imbalance in PTB-XL.
-# FocalLoss is included here as an alternative for more severe imbalance
-# scenarios or when per-class weighting is insufficient.
+# Note: the primary training loop (train_1d.py) uses BCEWithLogitsLoss with
+# pos_weight (multi-label), which is effective for the moderate imbalance in
+# PTB-XL. FocalLoss is included here as a single-label alternative for more
+# severe imbalance scenarios or when per-class weighting is insufficient.
 
 import torch
 import torch.nn as nn

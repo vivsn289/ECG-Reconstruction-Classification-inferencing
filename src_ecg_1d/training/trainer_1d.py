@@ -3,6 +3,7 @@
 import torch
 from tqdm import tqdm
 
+from configs.config_1d import PREDICTION_THRESHOLD
 from src_ecg_1d.training.metrics import (
     accuracy,
     macro_f1,
@@ -20,7 +21,7 @@ class Trainer1D:
         scheduler,
         device,
         num_classes,
-        class_weights=None,
+        pos_weights=None,
         use_amp=True,
     ):
         self.model = model
@@ -31,8 +32,8 @@ class Trainer1D:
 
         self.use_amp = use_amp and device.type == "cuda"
 
-        self.criterion = torch.nn.CrossEntropyLoss(
-            weight=class_weights.to(device) if class_weights is not None else None
+        self.criterion = torch.nn.BCEWithLogitsLoss(
+            pos_weight=pos_weights.to(device) if pos_weights is not None else None
         )
 
         self.scaler = torch.cuda.amp.GradScaler(enabled=self.use_amp)
@@ -62,8 +63,8 @@ class Trainer1D:
             total_loss += loss.item() * batch_size
             total_samples += batch_size
 
-            preds = logits.argmax(dim=1)
-            correct += (preds == y).sum().item()
+            preds = (torch.sigmoid(logits) > PREDICTION_THRESHOLD).float()
+            correct += (preds == y).all(dim=1).sum().item()
 
         self.scheduler.step()
 
@@ -94,7 +95,7 @@ class Trainer1D:
             total_loss += loss.item() * batch_size
             total_samples += batch_size
 
-            preds = logits.argmax(dim=1)
+            preds = (torch.sigmoid(logits) > PREDICTION_THRESHOLD).float()
 
             all_preds.append(preds.cpu())
             all_targets.append(y.cpu())

@@ -81,11 +81,16 @@ BATCH_SIZE = 32
 EPOCHS = 50
 LEARNING_RATE = 1e-3
 WEIGHT_DECAY = 1e-2    # AdamW default weight decay
-VAL_RATIO = 0.2        # fraction of records held out for validation
 NUM_WORKERS = 4
 
-# Random seed for reproducibility (dataset split, weight init, augmentation)
+# Random seed for reproducibility (weight init, augmentation)
 RANDOM_SEED = 42
+
+# Multi-label prediction threshold: sigmoid(logit) above this counts as positive
+PREDICTION_THRESHOLD = 0.5
+
+# Stop training if validation Macro-F1 hasn't improved for this many epochs
+EARLY_STOPPING_PATIENCE = 10
 
 # ------------------------------------------------------------------
 # Augmentation (applied to training windows only)
@@ -114,3 +119,38 @@ IG_STEPS = 50
 # Default record indices for explainability scripts
 # (indices into the records list returned by PTBXLECGLoader.get_records())
 EXPLAIN_RECORD_INDICES = [1000, 5020, 8918]
+
+# ------------------------------------------------------------------
+# Retrieval (RAG Layers 2-3)
+# ------------------------------------------------------------------
+
+EMBEDDING_MODEL = "sentence-transformers/all-MiniLM-L6-v2"
+EMBEDDING_DIM = 384
+INDEX_DIR = "data/indices"                    # where built indices are saved
+TEXTBOOK_PASSAGES_PATH = "src_ecg_1d/retrieval/knowledge_base/ecg_passages.json"
+TEXTBOOK_TOP_K = 5
+CASE_TOP_K = 5
+CASE_INDEX_CHECKPOINT_INTERVAL = 500          # checkpoint every N records
+
+# ------------------------------------------------------------------
+# Generation (RAG Layer 4)
+# ------------------------------------------------------------------
+
+LLM_PROVIDER = "anthropic"                    # "anthropic" or "openai"
+LLM_MODEL = "claude-sonnet-4-6"               # or "gpt-4-turbo"
+LLM_MAX_TOKENS = 1000
+LLM_TEMPERATURE = 0.3                         # low for reproducibility
+LLM_SYSTEM_PROMPT_PATH = "src_ecg_1d/generation/prompts/system_prompt.txt"
+LLM_MAX_EVIDENCE_ITEMS = 10                    # cap evidence items shown in the prompt
+
+# API keys are read from environment variables:
+#   ANTHROPIC_API_KEY or OPENAI_API_KEY
+
+# ------------------------------------------------------------------
+# Verification (RAG Layer 5)
+# ------------------------------------------------------------------
+
+SEMANTIC_SIMILARITY_WARN_THRESHOLD = 0.5
+SEMANTIC_SIMILARITY_FAIL_THRESHOLD = 0.3
+ATTRIBUTION_SIGNIFICANCE_PERCENTILE = 75.0    # for Check 4
+VERIFICATION_OUTPUT_DIR = os.path.join(RESULTS_DIR, "verification")

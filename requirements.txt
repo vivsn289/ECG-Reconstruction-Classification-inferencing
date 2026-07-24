@@ -31,6 +31,13 @@ seaborn==0.13.2
 # Training utilities
 tqdm==4.66.5
 
+# Retrieval (RAG Layers 2-3)
+faiss-cpu==1.14.3
+sentence-transformers==5.6.0
+
+# Generation (RAG Layer 4)
+anthropic==0.69.0
+
 # ------------------------------------------------------------------
 # Core: Image pipeline (legacy — only needed if running src/ pipeline)
 # ------------------------------------------------------------------

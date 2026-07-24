@@ -1,0 +1,436 @@
+[
+  {
+    "id": "norm_001",
+    "text": "Normal sinus rhythm is defined by a regular rhythm originating from the sinoatrial node, with a rate between 60 and 100 beats per minute in adults. Every QRS complex is preceded by an upright P-wave in lead II, and the P-P and R-R intervals are constant with only minor beat-to-beat variation. The PR interval falls within 120 to 200 milliseconds, and the QRS complex is narrow, generally under 120 milliseconds. This is the baseline rhythm against which all arrhythmias and conduction disturbances are compared, and its absence in any of these criteria should prompt consideration of an alternative rhythm.",
+    "condition": "NORM",
+    "morphology": "sinus-rhythm",
+    "leads": ["II"]
+  },
+  {
+    "id": "norm_002",
+    "text": "The normal P-wave reflects sequential right-then-left atrial depolarization and is upright in leads I, II, and aVF, inverted in aVR, and variable in the precordial leads. Its duration is typically under 120 milliseconds and its amplitude under 2.5 millimeters in the limb leads. In lead V1, a normal P-wave often shows a small initial positive deflection from right atrial depolarization followed by a small negative deflection from left atrial depolarization, though the negative component should not be deep or wide. Any broadening, notching, or increased amplitude beyond these thresholds suggests atrial enlargement rather than a normal atrial depolarization pattern.",
+    "condition": "NORM",
+    "morphology": "P-wave",
+    "leads": ["I", "II", "aVF", "V1"]
+  },
+  {
+    "id": "norm_003",
+    "text": "The PR interval, measured from the onset of the P-wave to the onset of the QRS complex, represents the time taken for the impulse to travel from the sinoatrial node through the atria, AV node, and His-Purkinje system to the ventricles. A normal PR interval ranges from 120 to 200 milliseconds. Intervals shorter than this suggest an accessory pathway bypassing the AV node's normal decremental conduction, while intervals longer than 200 milliseconds indicate first-degree AV block. The PR interval should remain constant from beat to beat in normal conduction, with any progressive lengthening or intermittent dropped beats pointing toward higher-grade AV conduction disease.",
+    "condition": "NORM",
+    "morphology": "PR-interval",
+    "leads": ["II"]
+  },
+  {
+    "id": "norm_004",
+    "text": "A normal QRS complex reflects rapid, coordinated depolarization of both ventricles through the intact His-Purkinje system and measures less than 120 milliseconds in duration. Morphology varies by lead but should lack notching, slurring, or fragmentation that would suggest delayed or aberrant conduction. Small septal Q waves under 40 milliseconds and under 25% of the following R-wave amplitude are a normal finding in leads I, aVL, V5, and V6, reflecting normal left-to-right septal activation. Any QRS widening beyond 120 milliseconds should raise suspicion for bundle branch block, ventricular pre-excitation, a paced rhythm, or a ventricular ectopic origin.",
+    "condition": "NORM",
+    "morphology": "QRS-duration",
+    "leads": ["I", "aVL", "V5", "V6"]
+  },
+  {
+    "id": "norm_005",
+    "text": "The normal frontal plane QRS axis falls between -30 and +90 degrees, determined by comparing the net QRS deflection in leads I and aVF. When both leads show a predominantly positive deflection, the axis is normal. Deviation beyond -30 degrees is termed left axis deviation and can result from left anterior fascicular block, inferior MI, or left ventricular hypertrophy, while deviation beyond +90 degrees is right axis deviation, seen with right ventricular hypertrophy, left posterior fascicular block, or lateral MI. Axis determination is a first-pass screening tool that narrows the differential before more specific morphological criteria are applied.",
+    "condition": "NORM",
+    "morphology": "QRS-axis",
+    "leads": ["I", "aVF"]
+  },
+  {
+    "id": "norm_006",
+    "text": "Normal R-wave progression across the precordial leads shows a gradual increase in R-wave amplitude and a corresponding decrease in S-wave amplitude moving from V1 to V6, with the transition point — where R-wave amplitude first exceeds S-wave amplitude — typically occurring between V2 and V4. Poor R-wave progression, where the transition is delayed beyond V4, can be a normal variant but is also associated with anterior myocardial infarction, left ventricular hypertrophy, or lead misplacement. Reversed progression, where R-wave amplitude decreases from V1 to V3, is distinctly abnormal and warrants correlation with clinical history for prior anteroseptal infarction.",
+    "condition": "NORM",
+    "morphology": "R-wave-progression",
+    "leads": ["V1", "V2", "V3", "V4"]
+  },
+  {
+    "id": "norm_007",
+    "text": "The normal ST segment is isoelectric, lying at the same baseline level as the PR and TP segments, and connects smoothly to the following T-wave without abrupt angulation. Minor ST elevation of up to 1 millimeter in the limb leads and up to 2 to 3 millimeters in the right precordial leads can be a normal variant, particularly in young, healthy individuals, and is termed early repolarization when accompanied by J-point notching. Any ST deviation should be interpreted in the context of its morphology, the leads involved, and the clinical presentation, since both under- and over-calling ST abnormality carry diagnostic consequences.",
+    "condition": "NORM",
+    "morphology": "ST-segment",
+    "leads": ["V2", "V3"]
+  },
+  {
+    "id": "norm_008",
+    "text": "Normal T-waves are upright in leads I, II, and V3 through V6, inverted in aVR, and variable in III, aVL, V1, and V2. T-wave amplitude is typically less than 5 millimeters in the limb leads and less than 10 millimeters in the precordial leads, and the T-wave is asymmetric, with a slower initial upslope and a steeper terminal downslope. T-wave inversion isolated to lead III or V1 can be a normal variant, sometimes called a juvenile T-wave pattern when it persists into adulthood in the right precordial leads. Symmetric, deep, or widespread T-wave inversion is abnormal and warrants further evaluation.",
+    "condition": "NORM",
+    "morphology": "T-wave",
+    "leads": ["I", "II", "V3", "V4", "V5", "V6"]
+  },
+  {
+    "id": "norm_009",
+    "text": "The QT interval, measured from the onset of the QRS complex to the end of the T-wave, varies with heart rate and is therefore usually reported as a rate-corrected value, most commonly using Bazett's formula. A normal corrected QT interval is generally under 440 milliseconds in men and under 460 milliseconds in women. Prolongation can be congenital or acquired, the latter commonly drug-induced or related to electrolyte disturbances such as hypokalemia or hypomagnesemia, and predisposes to torsades de pointes. A shortened QT interval is less common but is associated with hypercalcemia and certain inherited channelopathies.",
+    "condition": "NORM",
+    "morphology": "QT-interval",
+    "leads": ["II"]
+  },
+  {
+    "id": "norm_010",
+    "text": "Sinus arrhythmia is a normal physiological variant in which the sinus rate varies with the respiratory cycle, typically increasing during inspiration and decreasing during expiration due to fluctuating vagal tone. The P-wave morphology and PR interval remain constant beat to beat, distinguishing it from wandering atrial pacemaker or other atrial rhythm disturbances, and only the R-R interval varies. It is most pronounced in children and young adults and tends to diminish with age. Sinus arrhythmia requires no intervention and should not be mistaken for a pathological irregular rhythm such as atrial fibrillation, which lacks discernible, uniform P-waves.",
+    "condition": "NORM",
+    "morphology": "sinus-arrhythmia",
+    "leads": ["II"]
+  },
+  {
+    "id": "norm_011",
+    "text": "The U-wave is a small, low-amplitude deflection that follows the T-wave, best seen in the mid-precordial leads V2 through V4, and is thought to represent repolarization of the His-Purkinje system or mechanical afterpotentials. A normal U-wave is upright, concordant in polarity with the preceding T-wave, and has an amplitude less than 25% of the T-wave. Prominent U-waves can be seen with bradycardia or as a normal finding in some individuals, while inverted U-waves are pathological and can indicate myocardial ischemia or left ventricular volume overload. Very large U-waves, especially with QT prolongation, raise concern for hypokalemia.",
+    "condition": "NORM",
+    "morphology": "U-wave",
+    "leads": ["V2", "V3", "V4"]
+  },
+  {
+    "id": "norm_012",
+    "text": "Small septal Q waves are a normal finding in the lateral leads I, aVL, V5, and V6, produced by the earliest phase of ventricular depolarization as the impulse travels left to right across the interventricular septum before spreading through the rest of the ventricular myocardium. To be considered normal, these Q waves must be narrow, less than 40 milliseconds in duration, and shallow, less than 25% of the amplitude of the R-wave that follows in the same lead. Q waves that are wider, deeper, or present in leads where they are not expected are termed pathological and suggest prior myocardial infarction rather than a normal septal pattern.",
+    "condition": "NORM",
+    "morphology": "septal-Q-wave",
+    "leads": ["I", "aVL", "V5", "V6"]
+  },
+  {
+    "id": "mi_001",
+    "text": "ST segment elevation in leads II, III, and aVF is the hallmark electrocardiographic finding of acute inferior myocardial infarction. The ST elevation typically appears as a convex upward (tombstone) or concave upward morphology and is often accompanied by reciprocal ST depression in leads I and aVL. The inferior wall of the left ventricle is supplied primarily by the right coronary artery in approximately 85% of patients, with the left circumflex artery supplying it in the remainder, a distinction sometimes inferred from whether ST elevation in III exceeds that in II. The degree of ST elevation correlates roughly with the extent of myocardial injury, though this relationship is not strictly linear.",
+    "condition": "MI",
+    "morphology": "ST-elevation",
+    "leads": ["II", "III", "aVF"]
+  },
+  {
+    "id": "mi_002",
+    "text": "ST segment elevation across the anterior precordial leads V1 through V4 indicates acute anterior myocardial infarction, most often due to occlusion of the left anterior descending coronary artery, which supplies the anterior wall and interventricular septum. Because the LAD supplies a large portion of the left ventricular myocardium, anterior MI tends to carry a worse prognosis than infarctions in other territories and is more frequently complicated by heart failure, ventricular arrhythmia, and conduction block, particularly when the occlusion is proximal to the first septal perforator. New poor R-wave progression or pathological Q waves in these same leads often develop as the infarction evolves over hours.",
+    "condition": "MI",
+    "morphology": "ST-elevation",
+    "leads": ["V1", "V2", "V3", "V4"]
+  },
+  {
+    "id": "mi_003",
+    "text": "ST segment elevation in leads I, aVL, and the lateral precordial leads V5 and V6 characterizes lateral myocardial infarction, typically resulting from occlusion of the left circumflex artery or a diagonal branch of the left anterior descending artery. Lateral MI often occurs as an extension of an anterior or inferior infarction rather than in isolation, and isolated lateral involvement can be subtle on a standard twelve-lead ECG because the affected territory is relatively small. Reciprocal ST depression may appear in the inferior leads when the lateral wall is involved, and clinicians should have a lower threshold to suspect lateral extension when reciprocal changes are seen without a clear primary territory.",
+    "condition": "MI",
+    "morphology": "ST-elevation",
+    "leads": ["I", "aVL", "V5", "V6"]
+  },
+  {
+    "id": "mi_004",
+    "text": "Reciprocal ST segment depression appears in leads electrically opposite to the site of acute infarction and is a supportive, though not required, finding in ST-elevation myocardial infarction. For inferior MI, reciprocal depression is classically seen in leads I and aVL; for anterior MI, it may appear inferiorly; and for lateral MI, reciprocal changes can appear in the inferior leads. The presence of reciprocal changes increases diagnostic confidence for true infarction over other causes of ST elevation such as pericarditis or early repolarization, which typically lack reciprocal depression, and the magnitude of reciprocal depression has been associated with larger infarct size and higher risk of complications.",
+    "condition": "MI",
+    "morphology": "reciprocal-ST-depression",
+    "leads": ["I", "aVL"]
+  },
+  {
+    "id": "mi_005",
+    "text": "Pathological Q waves are wide, deep deflections at the onset of the QRS complex that indicate loss of viable myocardial electrical activity, most commonly from a completed myocardial infarction. To be considered pathological, a Q wave should be at least 40 milliseconds wide or at least 25% of the amplitude of the R-wave in the same lead, and it should appear in a distribution consistent with a coronary territory rather than an isolated lead. Pathological Q waves typically develop hours to days after the onset of a transmural infarction and, once established, usually persist indefinitely as a permanent marker of prior myocardial injury, even after the acute ST changes have resolved.",
+    "condition": "MI",
+    "morphology": "pathological-Q-wave",
+    "leads": ["II", "III", "aVF", "V1", "V2", "V3"]
+  },
+  {
+    "id": "mi_006",
+    "text": "T-wave inversion evolving over the hours to days following a myocardial infarction represents the resolution phase of the ischemic ECG pattern, typically following the acute phase of ST elevation and the subacute development of Q waves. The inverted T-waves are usually symmetric and deep in the leads corresponding to the infarcted territory, and their gradual normalization over weeks to months can serve as a rough timeline marker for how recently the infarction occurred. Persistent deep T-wave inversion beyond several weeks can indicate a large infarct, ongoing ischemia, or the development of a ventricular aneurysm, particularly when accompanied by persistent ST elevation.",
+    "condition": "MI",
+    "morphology": "T-wave-inversion",
+    "leads": ["V2", "V3", "V4"]
+  },
+  {
+    "id": "mi_007",
+    "text": "Hyperacute T-waves are among the earliest electrocardiographic signs of acute myocardial infarction, appearing within minutes of coronary occlusion and often preceding visible ST elevation. They are broad-based, tall, and peaked, sometimes resembling the T-waves seen in hyperkalemia, but are distinguished by their localization to a coronary territory and their association with reciprocal changes and evolving ST elevation on serial tracings. Recognizing hyperacute T-waves is clinically important because they represent a very early, potentially reversible stage of ischemia, and clinicians who catch this pattern before frank ST elevation develops can prompt earlier reperfusion therapy.",
+    "condition": "MI",
+    "morphology": "hyperacute-T-wave",
+    "leads": ["V2", "V3", "V4"]
+  },
+  {
+    "id": "mi_008",
+    "text": "Posterior myocardial infarction is electrocardiographically silent on the standard twelve-lead ECG because no leads directly face the posterior wall of the left ventricle, and it must instead be inferred from mirror-image changes in the anterior precordial leads. Horizontal ST depression, tall broad R-waves, and upright T-waves in leads V1 through V3 are the reciprocal equivalent of ST elevation, Q waves, and T-wave inversion that would be seen if posterior leads V7 through V9 were recorded directly. Posterior MI most often occurs in conjunction with inferior or lateral infarction due to shared blood supply from the right coronary or left circumflex artery, and isolated posterior involvement is easily missed without a high index of suspicion.",
+    "condition": "MI",
+    "morphology": "posterior-MI",
+    "leads": ["V1", "V2", "V3"]
+  },
+  {
+    "id": "mi_009",
+    "text": "The distinction between ST-elevation myocardial infarction and non-ST-elevation myocardial infarction is primarily electrocardiographic, with STEMI defined by new ST elevation meeting specific amplitude thresholds in two contiguous leads, or new left bundle branch block in the appropriate clinical context, while NSTEMI presents with ST depression, T-wave inversion, or nonspecific changes despite biomarker evidence of myocardial necrosis. This distinction drives acute management, since STEMI mandates emergent reperfusion therapy while NSTEMI is typically managed with an initial period of medical stabilization and risk stratification before invasive evaluation. Both represent myocardial infarction pathologically, differing mainly in whether the occlusion is complete and transmural or partial and subendocardial.",
+    "condition": "MI",
+    "morphology": "STEMI-vs-NSTEMI",
+    "leads": ["V2", "V3", "V4"]
+  },
+  {
+    "id": "mi_010",
+    "text": "The morphology of ST segment elevation carries diagnostic weight beyond its mere presence: acute myocardial infarction classically produces a convex, upward-bowing elevation sometimes described as tombstoning, particularly in severe or proximal occlusions, whereas pericarditis and early repolarization more typically produce a concave, smiling ST elevation. Tombstone morphology, especially when broad and accompanied by a loss of the normal J-point notch, is associated with larger infarct size and worse outcomes. While morphology alone should never override the overall clinical and electrocardiographic picture, it is a useful discriminating feature when the diagnosis is otherwise ambiguous.",
+    "condition": "MI",
+    "morphology": "ST-elevation-morphology",
+    "leads": ["V2", "V3"]
+  },
+  {
+    "id": "mi_011",
+    "text": "Right ventricular myocardial infarction occurs in a substantial minority of inferior MI cases due to shared blood supply from the right coronary artery and is detected using the right-sided precordial lead V4R, where ST elevation of 1 millimeter or more indicates right ventricular involvement. Because right-sided leads are not part of the standard twelve-lead ECG, right ventricular infarction is easily missed unless specifically sought in a patient presenting with inferior ST elevation. Recognizing right ventricular involvement is clinically important because these patients are preload-dependent and can develop severe hypotension with nitrates or other preload-reducing agents that are otherwise routine in MI management.",
+    "condition": "MI",
+    "morphology": "right-ventricular-MI",
+    "leads": ["II", "III", "aVF"]
+  },
+  {
+    "id": "mi_012",
+    "text": "The distribution of Q waves and ST-T changes across the twelve leads maps closely onto the coronary territory responsible for the infarction, and this localization is a routine part of ECG interpretation in suspected MI. Changes confined to II, III, and aVF localize to the inferior wall and right coronary artery; changes in V1 through V4 localize to the anterior wall and left anterior descending artery; and changes in I, aVL, V5, and V6 localize to the lateral wall and left circumflex artery or diagonal branches. Combined territories, such as anterolateral or inferoposterior involvement, suggest more extensive disease or occlusion of a more proximal vessel segment supplying multiple territories.",
+    "condition": "MI",
+    "morphology": "territory-localization",
+    "leads": ["II", "III", "aVF", "V1", "V4", "V5", "V6"]
+  },
+  {
+    "id": "mi_013",
+    "text": "The de Winter pattern is an electrocardiographic variant of acute anterior myocardial infarction, typically due to proximal left anterior descending artery occlusion, that lacks the classic ST elevation of STEMI. Instead, it shows upsloping ST depression at the J-point in the precordial leads that transitions into tall, symmetric, peaked T-waves, sometimes with mild ST elevation in aVR. Because it does not meet standard STEMI criteria, the de Winter pattern is a high-risk pattern that can be mistaken for less urgent ischemia if not specifically recognized, and it warrants the same emergent management as overt STEMI given the severity of the underlying occlusion it represents.",
+    "condition": "MI",
+    "morphology": "de-Winter-pattern",
+    "leads": ["V2", "V3", "V4"]
+  },
+  {
+    "id": "mi_014",
+    "text": "The electrocardiographic appearance of myocardial infarction evolves in a predictable sequence over hours to weeks. In the hyperacute phase, minutes after occlusion, T-waves become tall and peaked. Within the first hours, ST segment elevation develops and progressively increases. Over the following hours to a day or two, R-wave amplitude diminishes and pathological Q waves begin to form as the ST elevation gradually resolves. In the subsequent days to weeks, T-waves invert and the ST segment returns toward baseline. By the chronic phase, weeks to months later, Q waves typically persist as a permanent marker while the ST segment and T-wave often normalize. Recognizing which stage a tracing represents helps estimate how long ago the infarction occurred.",
+    "condition": "MI",
+    "morphology": "temporal-evolution",
+    "leads": ["II", "III", "aVF", "V2", "V3"]
+  },
+  {
+    "id": "sttc_001",
+    "text": "Horizontal ST segment depression, in which the ST segment remains flat and depressed relative to baseline before transitioning into the T-wave, is a common but nonspecific finding associated with myocardial ischemia, left ventricular strain, digoxin effect, and a variety of other conditions. Unlike the convex ST elevation of acute infarction, horizontal depression reflects subendocardial rather than transmural involvement and does not localize as reliably to a single coronary territory. When present diffusely across multiple lead groups rather than in a pattern consistent with a single vascular territory, horizontal ST depression is more suggestive of a global process such as demand ischemia, electrolyte disturbance, or medication effect than a focal coronary occlusion.",
+    "condition": "STTC",
+    "morphology": "ST-depression",
+    "leads": ["V4", "V5", "V6"]
+  },
+  {
+    "id": "sttc_002",
+    "text": "Downsloping ST segment depression, in which the ST segment slopes progressively downward from the J-point into the T-wave, is considered a more specific marker of myocardial ischemia than horizontal or upsloping depression, particularly when it appears during exercise stress testing or in the setting of anginal symptoms. It reflects a greater degree of subendocardial ischemic burden than upsloping depression, which is often a normal response to tachycardia. Downsloping depression exceeding 1 millimeter at 80 milliseconds after the J-point is a standard criterion for a positive ischemic response on stress testing, and its presence at rest raises concern for ongoing or unstable ischemia.",
+    "condition": "STTC",
+    "morphology": "ST-depression",
+    "leads": ["V4", "V5", "V6"]
+  },
+  {
+    "id": "sttc_003",
+    "text": "T-wave flattening, in which the normally rounded and asymmetric T-wave becomes low-amplitude or nearly isoelectric without frank inversion, is one of the most common and least specific abnormalities encountered on a routine ECG. It can result from myocardial ischemia, electrolyte disturbance, medication effect, autonomic influence, or simply normal aging, and by itself carries limited diagnostic specificity. T-wave flattening becomes more clinically significant when it is new compared to a prior tracing, when it is accompanied by ST segment changes, or when it occurs in the context of chest pain or other symptoms suggestive of an acute coronary process.",
+    "condition": "STTC",
+    "morphology": "T-wave-flattening",
+    "leads": ["V4", "V5", "V6"]
+  },
+  {
+    "id": "sttc_004",
+    "text": "Nonspecific T-wave inversion refers to inverted T-waves that do not fit a pattern of acute ischemia, prior infarction, or another well-defined syndrome such as Wellens syndrome or hypertrophic strain. These inversions are typically shallow, asymmetric, and scattered across leads without a clear coronary territory distribution, and they can result from a broad range of causes including deconditioning, mild ventricular strain, prior viral myocarditis, or simply normal variation. Nonspecific T-wave inversion warrants clinical correlation rather than immediate concern for acute coronary syndrome, particularly when the patient is asymptomatic and the pattern is unchanged from prior tracings.",
+    "condition": "STTC",
+    "morphology": "T-wave-inversion",
+    "leads": ["III", "V1", "V2"]
+  },
+  {
+    "id": "sttc_005",
+    "text": "Early repolarization is a common ECG pattern, especially in young, healthy, and athletic individuals, characterized by J-point elevation with a notch or slur at the terminal QRS, followed by concave ST segment elevation and tall, often asymmetric T-waves, most prominent in the mid-to-left precordial leads. It is generally considered a benign normal variant, though certain high-risk subtypes with J-point elevation in the inferior leads have been associated with a small increase in arrhythmic risk in specific populations. Distinguishing early repolarization from pathological ST elevation relies on the concave morphology, the absence of reciprocal changes, and stability of the pattern on serial tracings.",
+    "condition": "STTC",
+    "morphology": "early-repolarization",
+    "leads": ["V3", "V4", "V5"]
+  },
+  {
+    "id": "sttc_006",
+    "text": "Differentiating nonspecific ST-T changes from acute myocardial infarction relies on several features working together rather than any single criterion. Acute MI tends to show convex or tombstone ST elevation localized to a coronary territory, accompanied by reciprocal changes in electrically opposite leads and evolving morphology on serial ECGs; nonspecific ST-T change is more often flat or minimally deviated, diffusely distributed, lacking reciprocal depression, and stable over time. Clinical context — chest pain characteristics, cardiac biomarkers, and prior tracings for comparison — remains essential, since ECG morphology alone cannot always reliably distinguish benign nonspecific change from evolving ischemia, especially in patients with baseline conduction abnormalities.",
+    "condition": "STTC",
+    "morphology": "differential-diagnosis",
+    "leads": ["II", "III", "V2", "V3"]
+  },
+  {
+    "id": "sttc_007",
+    "text": "Digoxin effect produces a characteristic scooped or sagging ST segment depression, sometimes likened to a Salvador Dali mustache, most prominent in leads with tall R-waves such as the lateral precordial leads. This finding reflects the drug's effect on ventricular repolarization at therapeutic doses and is distinct from digoxin toxicity, which instead produces arrhythmias such as atrial tachycardia with block or accelerated junctional rhythm. Digoxin effect alone does not indicate toxicity and should not be mistaken for ischemic ST depression, though it can complicate interpretation of the ECG for concurrent ischemia in patients taking the medication.",
+    "condition": "STTC",
+    "morphology": "digoxin-effect",
+    "leads": ["V5", "V6"]
+  },
+  {
+    "id": "sttc_008",
+    "text": "Chronic myocardial ischemia without infarction can produce persistent, stable ST-T wave abnormalities that reflect ongoing subendocardial hypoperfusion rather than an acute event. These changes are typically mild ST depression or T-wave flattening or inversion in the lateral or inferolateral leads, present on serial tracings without significant evolution, and often correlate with known coronary artery disease, prior revascularization, or a positive stress test. Unlike acute ischemic changes, these patterns do not require emergent intervention but do inform risk stratification and ongoing management of the patient's underlying coronary disease.",
+    "condition": "STTC",
+    "morphology": "chronic-ischemia",
+    "leads": ["II", "V5", "V6"]
+  },
+  {
+    "id": "sttc_009",
+    "text": "Rate-related ST-T wave changes occur when repolarization abnormalities appear or worsen at faster heart rates and normalize as the rate slows, a phenomenon sometimes seen during sinus tachycardia, exercise, or supraventricular tachyarrhythmias. These changes reflect the heart rate's effect on the duration and timing of repolarization rather than a fixed structural or ischemic abnormality, though rate-related changes can occasionally unmask underlying ischemia in a heart with limited coronary reserve. Comparing tracings obtained at different heart rates, when available, helps determine whether an ST-T abnormality is truly rate-dependent or represents a fixed pathological process.",
+    "condition": "STTC",
+    "morphology": "rate-related-change",
+    "leads": ["II", "V4", "V5"]
+  },
+  {
+    "id": "sttc_010",
+    "text": "Electrolyte disturbances can produce a range of nonspecific ST-T wave changes that mimic other pathology. Hypokalemia classically flattens T-waves and prominent U-waves, sometimes with mild ST depression, while hyperkalemia produces tall, narrow, peaked T-waves that can be mistaken for the hyperacute T-waves of early infarction. Hypocalcemia prolongs the ST segment and QT interval without necessarily altering T-wave morphology, while hypercalcemia shortens the QT interval. Because these changes are diffuse rather than localized to a coronary territory and typically resolve with correction of the underlying electrolyte abnormality, they should be considered whenever ST-T changes seem out of proportion to the clinical picture.",
+    "condition": "STTC",
+    "morphology": "electrolyte-effect",
+    "leads": ["II", "V2", "V3"]
+  },
+  {
+    "id": "sttc_011",
+    "text": "Acute pericarditis produces diffuse, concave ST segment elevation across most limb and precordial leads, sparing aVR and sometimes V1, along with PR segment depression that is often most visible in lead II and PR elevation in aVR. Unlike myocardial infarction, pericarditis does not typically show reciprocal ST depression, localize to a single coronary territory, or evolve into pathological Q waves. The diffuse, concave pattern together with the characteristic PR segment changes and a clinical history of positional or pleuritic chest pain helps distinguish pericarditis from an acute coronary syndrome, though the two can occasionally coexist or be difficult to distinguish in ambiguous cases.",
+    "condition": "STTC",
+    "morphology": "pericarditis-pattern",
+    "leads": ["II", "V5", "V6"]
+  },
+  {
+    "id": "sttc_012",
+    "text": "Nonspecific ST-T wave abnormality is a broad diagnostic category applied when ST segment or T-wave changes are present but do not fit a recognizable pattern of ischemia, infarction, hypertrophy, conduction disease, or a known metabolic or drug effect. It is one of the most frequently reported findings on automated and manual ECG interpretation and, while common, carries relatively low specificity on its own. The clinical significance of a nonspecific ST-T abnormality depends heavily on context, including the patient's symptoms, risk factors, and whether the finding is new or unchanged compared to prior electrocardiograms, since an isolated finding without correlating history is rarely actionable by itself.",
+    "condition": "STTC",
+    "morphology": "nonspecific-change",
+    "leads": ["II", "III", "V4"]
+  },
+  {
+    "id": "cd_001",
+    "text": "Left bundle branch block produces a widened QRS complex, generally 120 milliseconds or greater, with a broad, notched or slurred monophasic R-wave in the lateral leads I, aVL, V5, and V6, and a corresponding deep, broad S-wave in V1, often with a QS or rS morphology. The normal septal Q waves in the lateral leads are absent because septal depolarization is reversed, proceeding right to left rather than left to right. LBBB also produces secondary, discordant ST-T wave changes that are opposite in direction to the major QRS deflection, which substantially complicates the diagnosis of concurrent myocardial ischemia or infarction using standard ST elevation criteria.",
+    "condition": "CD",
+    "morphology": "LBBB",
+    "leads": ["I", "aVL", "V1", "V5", "V6"]
+  },
+  {
+    "id": "cd_002",
+    "text": "Right bundle branch block produces a widened QRS complex with a characteristic rsR' or M-shaped pattern in lead V1, reflecting delayed right ventricular depolarization occurring after the left ventricle has already been activated normally through the intact left bundle. A wide, slurred S-wave is seen in the lateral leads I and V6, corresponding to the terminal rightward and delayed forces. Unlike LBBB, RBBB does not typically obscure the ability to diagnose ST elevation myocardial infarction, since the initial portion of the QRS and the ST segment in the affected leads are less distorted. RBBB can occur as an isolated conduction finding or in association with underlying structural heart disease.",
+    "condition": "CD",
+    "morphology": "RBBB",
+    "leads": ["V1", "I", "V6"]
+  },
+  {
+    "id": "cd_003",
+    "text": "First-degree atrioventricular block is defined by a prolonged PR interval, greater than 200 milliseconds, that remains constant from beat to beat, reflecting delayed but ultimately preserved conduction through the AV node or His-Purkinje system. Every P-wave is still followed by a QRS complex, distinguishing it from higher-grade block where some or all impulses fail to conduct. First-degree block is usually asymptomatic and often an incidental finding, though marked prolongation can occasionally cause a pacemaker-syndrome-like presentation from loss of AV synchrony, and its presence can sometimes herald progression to more advanced conduction disease over time, particularly when due to structural or degenerative conduction system disease.",
+    "condition": "CD",
+    "morphology": "first-degree-AV-block",
+    "leads": ["II"]
+  },
+  {
+    "id": "cd_004",
+    "text": "Second-degree atrioventricular block, Mobitz type I, also called Wenckebach block, shows progressive lengthening of the PR interval over several consecutive beats until a P-wave fails to conduct and is not followed by a QRS complex, after which the cycle resets and repeats. This pattern reflects fatiguing, decremental conduction typically localized to the AV node itself, and it is usually a benign, often vagally-mediated phenomenon that does not require pacing unless symptomatic. It can be distinguished from Mobitz type II by the progressively lengthening PR interval preceding the dropped beat, whereas Mobitz type II drops beats without antecedent PR prolongation.",
+    "condition": "CD",
+    "morphology": "Mobitz-I",
+    "leads": ["II"]
+  },
+  {
+    "id": "cd_005",
+    "text": "Second-degree atrioventricular block, Mobitz type II, shows intermittently non-conducted P-waves with a constant PR interval on the beats that do conduct, without the progressive PR lengthening seen in Mobitz type I. This pattern reflects disease below the AV node, typically within the His-Purkinje system, and carries a substantially higher risk of sudden progression to complete heart block than Mobitz type I. Because of this risk, Mobitz type II block is generally considered an indication for permanent pacemaker implantation even in asymptomatic patients, and it is often accompanied by a wide QRS complex reflecting the underlying infranodal conduction disease.",
+    "condition": "CD",
+    "morphology": "Mobitz-II",
+    "leads": ["II"]
+  },
+  {
+    "id": "cd_006",
+    "text": "Third-degree, or complete, atrioventricular block occurs when no atrial impulses conduct to the ventricles, resulting in complete electrical dissociation between the P-waves and QRS complexes, each occurring at its own independent, regular rate. The ventricles are sustained by an escape rhythm arising either from the AV junction, producing a narrow QRS at a moderate rate, or from a more distal ventricular focus, producing a wide QRS at a slower, less reliable rate. Complete heart block is a medical emergency when the escape rhythm is slow or unstable, and it generally requires urgent temporary pacing followed by permanent pacemaker implantation regardless of the underlying cause.",
+    "condition": "CD",
+    "morphology": "complete-heart-block",
+    "leads": ["II"]
+  },
+  {
+    "id": "cd_007",
+    "text": "Left anterior fascicular block results from conduction failure in the anterior fascicle of the left bundle branch, producing left axis deviation, typically beyond -45 degrees, with a small Q-wave and tall R-wave in lead I and aVL, and a small R-wave with a deep S-wave in the inferior leads II, III, and aVF. The QRS duration is usually only mildly prolonged, since conduction proceeds normally through the posterior fascicle. LAFB is the most common fascicular block due to the anterior fascicle's relatively long, thin, and single blood supply, and it can occur in isolation or alongside right bundle branch block as part of a bifascicular block pattern.",
+    "condition": "CD",
+    "morphology": "LAFB",
+    "leads": ["I", "aVL", "II", "III", "aVF"]
+  },
+  {
+    "id": "cd_008",
+    "text": "Left posterior fascicular block results from conduction failure in the posterior fascicle of the left bundle branch and produces right axis deviation, typically beyond +90 degrees, with a small R-wave and deep S-wave in lead I and aVL and a small Q-wave with tall R-wave in the inferior leads. It is considerably less common than left anterior fascicular block because the posterior fascicle is shorter, thicker, and has a dual blood supply, making it more resistant to ischemic or degenerative injury. Because right axis deviation has many other causes, including right ventricular hypertrophy and lateral MI, the diagnosis of LPFB requires excluding these alternatives before attribution to isolated fascicular disease.",
+    "condition": "CD",
+    "morphology": "LPFB",
+    "leads": ["I", "aVL", "II", "III", "aVF"]
+  },
+  {
+    "id": "cd_009",
+    "text": "Bifascicular block refers to the combination of right bundle branch block with either left anterior or left posterior fascicular block, reflecting disease in two of the three fascicles of the conduction system and leaving only one fascicle to conduct all ventricular depolarization. The ECG shows the characteristic RBBB pattern in V1 combined with the axis deviation typical of the associated fascicular block. Bifascicular block carries a risk of progression to complete heart block, particularly when accompanied by a prolonged PR interval, a combination sometimes termed trifascicular disease, and its presence in a syncope evaluation often prompts further electrophysiological assessment.",
+    "condition": "CD",
+    "morphology": "bifascicular-block",
+    "leads": ["V1", "I", "aVL"]
+  },
+  {
+    "id": "cd_010",
+    "text": "Nonspecific intraventricular conduction delay describes QRS widening beyond 110 milliseconds that does not fit the classic morphological criteria for left or right bundle branch block, often reflecting diffuse rather than fascicle-specific conduction system disease. It can result from myocardial scarring, cardiomyopathy, electrolyte disturbance, or certain antiarrhythmic and other medications that slow cardiac conduction. Unlike true bundle branch block, the QRS morphology in nonspecific IVCD lacks a single dominant, recognizable pattern, and its clinical significance depends on the degree of widening and the presence of underlying structural heart disease, with marked widening associated with a worse overall cardiac prognosis.",
+    "condition": "CD",
+    "morphology": "nonspecific-IVCD",
+    "leads": ["V1", "V6"]
+  },
+  {
+    "id": "cd_011",
+    "text": "Ventricular pre-excitation, seen in Wolff-Parkinson-White pattern, results from an accessory pathway that conducts the atrial impulse directly to the ventricle, bypassing the normal decremental delay of the AV node. This produces a short PR interval, a slurred initial upstroke of the QRS known as a delta wave, and a mildly widened QRS complex from the fusion of pre-excited and normally conducted depolarization. The pattern can mimic bundle branch block or even myocardial infarction depending on which ventricular region is pre-excited, and it predisposes affected individuals to re-entrant supraventricular tachyarrhythmias that use the accessory pathway as part of the re-entrant circuit.",
+    "condition": "CD",
+    "morphology": "WPW-pattern",
+    "leads": ["II", "V1", "V2"]
+  },
+  {
+    "id": "cd_012",
+    "text": "Sinus node dysfunction encompasses a range of abnormalities in impulse generation or exit from the sinoatrial node, including inappropriate sinus bradycardia, sinus pauses, and sinoatrial exit block, in which the P-wave itself is delayed or fails to appear despite normal underlying sinus node activity. On the surface ECG, sinoatrial block appears as an abrupt pause that is a multiple of the baseline P-P interval, distinguishing it from a simple sinus pause. Sinus node dysfunction is often degenerative in etiology, more common with advancing age, and when symptomatic with dizziness or syncope typically warrants permanent pacemaker implantation regardless of the specific mechanism.",
+    "condition": "CD",
+    "morphology": "sinus-node-dysfunction",
+    "leads": ["II"]
+  },
+  {
+    "id": "hyp_001",
+    "text": "The Sokolow-Lyon criteria are among the most widely used voltage-based measures for detecting left ventricular hypertrophy, defined as the sum of the S-wave depth in V1 and the R-wave height in either V5 or V6 exceeding 35 millimeters, or an R-wave in aVL exceeding 11 millimeters. These criteria rely on the principle that a hypertrophied left ventricle generates greater electrical forces, producing taller R-waves in leads facing the left ventricle and deeper S-waves in leads facing away from it. While widely used for their simplicity, Sokolow-Lyon criteria have modest sensitivity and can be falsely positive in thin individuals with less chest wall attenuation of the ECG signal.",
+    "condition": "HYP",
+    "morphology": "LVH-voltage-criteria",
+    "leads": ["V1", "V5", "V6", "aVL"]
+  },
+  {
+    "id": "hyp_002",
+    "text": "The Cornell voltage criteria for left ventricular hypertrophy use the sum of the R-wave amplitude in aVL and the S-wave amplitude in V3, with different thresholds for men and women — greater than 28 millimeters in men and greater than 20 millimeters in women — reflecting known sex-based differences in baseline QRS voltage. Cornell criteria were developed to improve on the sensitivity limitations of Sokolow-Lyon criteria and have shown better correlation with echocardiographically measured left ventricular mass in several validation studies. As with all voltage-based criteria, Cornell criteria can be affected by body habitus, age, and lead placement, so they are best interpreted alongside clinical context rather than in isolation.",
+    "condition": "HYP",
+    "morphology": "LVH-voltage-criteria",
+    "leads": ["aVL", "V3"]
+  },
+  {
+    "id": "hyp_003",
+    "text": "Left ventricular hypertrophy with strain pattern refers to the combination of voltage criteria for LVH together with asymmetric ST segment depression and T-wave inversion in the leads with the tallest R-waves, typically the lateral leads I, aVL, V5, and V6. This repolarization pattern reflects altered ventricular repolarization secondary to increased myocardial mass and wall stress rather than primary ischemia, though it can be difficult to distinguish from ischemic ST-T changes on a single tracing. LVH with strain is associated with a greater burden of hypertensive or valvular heart disease and carries independent prognostic significance for adverse cardiovascular outcomes beyond voltage criteria alone.",
+    "condition": "HYP",
+    "morphology": "LVH-strain",
+    "leads": ["I", "aVL", "V5", "V6"]
+  },
+  {
+    "id": "hyp_004",
+    "text": "Right ventricular hypertrophy produces a dominant R-wave in lead V1, with an R-to-S ratio greater than 1, right axis deviation typically beyond +110 degrees, and often a deep S-wave persisting into the lateral precordial leads V5 and V6, reflecting the increased rightward and anterior electrical forces from an enlarged right ventricle overcoming the normally dominant left ventricular forces. RVH is most commonly seen in conditions causing chronic pressure or volume overload of the right ventricle, such as pulmonary hypertension, pulmonic stenosis, or long-standing chronic lung disease, and is often accompanied by right atrial enlargement given the shared hemodynamic burden on the right heart.",
+    "condition": "HYP",
+    "morphology": "RVH-criteria",
+    "leads": ["V1", "V5", "V6"]
+  },
+  {
+    "id": "hyp_005",
+    "text": "Left atrial enlargement, sometimes called P-mitrale, produces a broad, notched P-wave in lead II with a duration exceeding 120 milliseconds and an interpeak notch interval greater than 40 milliseconds, reflecting delayed and prolonged left atrial depolarization. In lead V1, left atrial enlargement produces a deep, wide terminal negative deflection of the P-wave, with the terminal negative portion having an area — depth multiplied by duration — exceeding one small box. Left atrial enlargement is commonly associated with mitral valve disease, long-standing hypertension, or any condition that chronically elevates left atrial pressure or volume, and its presence often precedes or accompanies left ventricular hypertrophy.",
+    "condition": "HYP",
+    "morphology": "left-atrial-enlargement",
+    "leads": ["II", "V1"]
+  },
+  {
+    "id": "hyp_006",
+    "text": "Right atrial enlargement, sometimes called P-pulmonale, produces a tall, peaked P-wave in lead II with amplitude exceeding 2.5 millimeters, reflecting increased right atrial electrical forces without necessarily prolonging total P-wave duration, since right atrial depolarization occurs relatively early and rapidly. In lead V1, the initial positive deflection of the P-wave, corresponding to right atrial activation, becomes taller than 1.5 millimeters. Right atrial enlargement is classically associated with conditions causing chronic right heart pressure or volume overload, such as pulmonary hypertension, tricuspid valve disease, or severe chronic lung disease, and frequently coexists with right ventricular hypertrophy given their shared hemodynamic drivers.",
+    "condition": "HYP",
+    "morphology": "right-atrial-enlargement",
+    "leads": ["II", "V1"]
+  },
+  {
+    "id": "hyp_007",
+    "text": "Biventricular hypertrophy can be difficult to detect on a standard ECG because the electrical forces from an enlarged right ventricle can partially cancel the more dominant forces from an enlarged left ventricle, sometimes producing a deceptively normal-appearing tracing despite significant hypertrophy of both chambers. Clues suggestive of biventricular hypertrophy include voltage criteria for left ventricular hypertrophy combined with right axis deviation or a prominent R-wave in V1 that would otherwise be unexpected, or large equiphasic QRS complexes in the mid-precordial leads, sometimes called the Katz-Wachtel phenomenon. Echocardiography remains the more sensitive and specific tool for confirming biventricular hypertrophy when it is suspected from these subtle ECG clues.",
+    "condition": "HYP",
+    "morphology": "biventricular-hypertrophy",
+    "leads": ["V1", "V3", "V4"]
+  },
+  {
+    "id": "hyp_008",
+    "text": "Right ventricular hypertrophy with strain pattern shows ST segment depression and T-wave inversion in the right precordial leads V1 through V3, and sometimes extending into the inferior leads, reflecting altered repolarization of the hypertrophied right ventricle analogous to left ventricular strain pattern but localized to the right-sided leads. This pattern is often seen in severe pulmonary hypertension or chronic conditions causing marked right ventricular pressure overload, such as longstanding uncorrected pulmonic stenosis or Eisenmenger physiology. The presence of strain pattern alongside voltage and axis criteria for RVH strengthens the diagnosis and often correlates with more severe right ventricular pressure elevation than voltage criteria alone.",
+    "condition": "HYP",
+    "morphology": "RVH-strain",
+    "leads": ["V1", "V2", "V3"]
+  },
+  {
+    "id": "hyp_009",
+    "text": "Left ventricular hypertrophy is frequently accompanied by left axis deviation, since the increased mass and thickness of the left ventricular free wall shifts the mean electrical axis further leftward beyond the normal range, even without a concurrent fascicular block. This finding should be distinguished from left anterior fascicular block, which produces a more pronounced characteristic small Q-wave and tall R-wave pattern in lead I and aVL together with a small R and deep S in the inferior leads; LVH-related axis shift is typically less extreme and occurs alongside voltage criteria and often strain pattern rather than the specific inferior lead morphology of LAFB.",
+    "condition": "HYP",
+    "morphology": "LVH-axis-deviation",
+    "leads": ["I", "aVL", "II", "III"]
+  },
+  {
+    "id": "hyp_010",
+    "text": "Combined atrial enlargement produces a P-wave with features of both right and left atrial enlargement, typically a tall, peaked initial component reflecting right atrial hypertrophy together with a broad, notched or prolonged terminal component reflecting left atrial hypertrophy, sometimes described as a biphasic or tall-and-wide P-wave in lead II. This pattern is seen in conditions that place a combined pressure and volume burden on both atria, such as advanced mixed valvular disease or longstanding biventricular failure, and its presence suggests more advanced or diffuse structural heart disease than isolated enlargement of a single chamber.",
+    "condition": "HYP",
+    "morphology": "combined-atrial-enlargement",
+    "leads": ["II", "V1"]
+  },
+  {
+    "id": "hyp_011",
+    "text": "A dominant R-wave in V1 with right axis deviation is one of the more specific patterns for right ventricular hypertrophy, distinguishing it from other causes of a tall R-wave in V1 such as posterior myocardial infarction, right bundle branch block, or Wolff-Parkinson-White pattern with a posteroseptal accessory pathway. The R-to-S ratio in V1 exceeding 1, especially when combined with right axis deviation beyond +110 degrees and a similarly persistent S-wave in V6, points toward RVH rather than these alternative explanations, though the differential should always be considered given the overlapping ECG appearance and differing clinical implications of each diagnosis.",
+    "condition": "HYP",
+    "morphology": "RVH-axis-pattern",
+    "leads": ["V1", "V6"]
+  },
+  {
+    "id": "hyp_012",
+    "text": "The repolarization changes associated with left ventricular hypertrophy strain can closely resemble ischemic ST-T changes, and distinguishing the two relies on morphology, distribution, and clinical context rather than any single definitive feature. LVH strain typically shows a gradually downsloping ST segment merging asymmetrically into an inverted T-wave in the leads with the tallest R-waves, often described as a reverse checkmark or scooped appearance, and it is generally accompanied by voltage criteria for LVH. Acute ischemic change, by contrast, is more often accompanied by patient symptoms, evolves on serial tracings, and may show reciprocal changes not expected with strain pattern, though in ambiguous cases troponin testing and prior ECGs for comparison are often necessary to differentiate the two.",
+    "condition": "HYP",
+    "morphology": "LVH-strain-vs-ischemia",
+    "leads": ["I", "aVL", "V5", "V6"]
+  }
+]

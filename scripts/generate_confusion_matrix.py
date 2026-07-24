@@ -1,19 +1,23 @@
 # scripts/generate_confusion_matrix.py
 #
-# Generate a normalized confusion matrix for the validation set.
+# Generate per-class confusion matrices for the validation set.
 #
-# Reconstructs the same train/val record split used during training
-# (same RANDOM_SEED and VAL_RATIO from configs/config_1d.py) so that
-# the confusion matrix reflects the model's true validation performance.
+# Reconstructs the same strat_fold-based train/val/test split used during
+# training (see src_ecg_1d.train_1d.split_by_strat_fold) so the confusion
+# matrices reflect the model's true validation performance.
+#
+# The classifier is multi-label (a record can carry more than one
+# superclass diagnosis), so there is no single NxN confusion matrix.
+# Instead we compute one binary (positive vs. negative) confusion matrix
+# per class and plot them in a grid.
 #
 # Usage (from repository root):
 #   python -m scripts.generate_confusion_matrix
 
 import os
-import random
 import torch
 import matplotlib.pyplot as plt
-from sklearn.metrics import ConfusionMatrixDisplay
+from sklearn.metrics import ConfusionMatrixDisplay, multilabel_confusion_matrix
 from torch.utils.data import DataLoader
 
 from configs.config_1d import (
@@ -25,13 +29,13 @@ from configs.config_1d import (
     LABEL_ENCODER,
     CLASS_NAMES,
     BATCH_SIZE,
-    VAL_RATIO,
-    RANDOM_SEED,
+    PREDICTION_THRESHOLD,
     SAMPLING_RATE,
 )
 from src_ecg_1d.models.ecg_model import ECGClassifier1D
 from src_ecg_1d.data.loaders import PTBXLECGLoader
 from src_ecg_1d.data.dataset_1d import ECGWindowDataset
+from src_ecg_1d.train_1d import split_by_strat_fold
 
 # ------------------------------------------------------------------
 # Config
@@ -39,23 +43,13 @@ from src_ecg_1d.data.dataset_1d import ECGWindowDataset
 CHECKPOINT = os.path.join(CHECKPOINT_DIR, "best_model.pt")
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-
-def split_records(records, val_ratio, seed):
-    """Same split logic as train_1d.py — must be kept in sync."""
-    rng = random.Random(seed)
-    shuffled = records[:]
-    rng.shuffle(shuffled)
-    n_val = int(len(shuffled) * val_ratio)
-    return shuffled[n_val:], shuffled[:n_val]  # train, val
-
-
 # ------------------------------------------------------------------
 # Data
 # ------------------------------------------------------------------
 loader = PTBXLECGLoader(DATA_ROOT, sampling_rate=SAMPLING_RATE)
 all_records = loader.get_records()
 
-_, val_records = split_records(all_records, VAL_RATIO, RANDOM_SEED)
+_, val_records, _ = split_by_strat_fold(all_records)
 
 val_dataset = ECGWindowDataset(
     records=val_records,
@@ -85,27 +79,27 @@ with torch.no_grad():
     for x, y in val_loader:
         x = x.to(DEVICE)
         logits = model(x)
-        preds = logits.argmax(dim=1).cpu()
+        preds = (torch.sigmoid(logits) > PREDICTION_THRESHOLD).float().cpu()
         all_preds.append(preds)
         all_targets.append(y)
 
-all_preds = torch.cat(all_preds)
-all_targets = torch.cat(all_targets)
+all_preds = torch.cat(all_preds).numpy()
+all_targets = torch.cat(all_targets).numpy()
 
 # ------------------------------------------------------------------
-# Confusion matrix
+# Per-class confusion matrices
 # ------------------------------------------------------------------
 os.makedirs("visuals", exist_ok=True)
 
-disp = ConfusionMatrixDisplay.from_predictions(
-    all_targets,
-    all_preds,
-    display_labels=CLASS_NAMES,
-    cmap="Blues",
-    normalize="true",
-)
+matrices = multilabel_confusion_matrix(all_targets, all_preds)  # (num_classes, 2, 2)
 
-plt.title("Normalized Confusion Matrix (Validation Set)")
+fig, axes = plt.subplots(1, NUM_CLASSES, figsize=(4 * NUM_CLASSES, 4))
+for cls_idx, (cls_name, matrix) in enumerate(zip(CLASS_NAMES, matrices)):
+    disp = ConfusionMatrixDisplay(matrix, display_labels=["Negative", "Positive"])
+    disp.plot(ax=axes[cls_idx], cmap="Blues", colorbar=False, values_format="d")
+    axes[cls_idx].set_title(cls_name)
+
+fig.suptitle("Per-Class Confusion Matrices (Validation Set)")
 plt.tight_layout()
 plt.savefig("visuals/confusion_matrix.png", dpi=300)
 plt.close()

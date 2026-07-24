@@ -32,9 +32,9 @@ from configs.config_1d import (
     BATCH_SIZE,
     EPOCHS,
     LEARNING_RATE,
-    VAL_RATIO,
     NUM_WORKERS,
     RANDOM_SEED,
+    EARLY_STOPPING_PATIENCE,
     AUG_AMPLITUDE_SCALE_RANGE,
     AUG_AMPLITUDE_SCALE_P,
     AUG_GAUSSIAN_NOISE_STD,
@@ -66,55 +66,52 @@ def set_seed(seed: int):
         torch.cuda.manual_seed_all(seed)
 
 
-def split_records(records, val_ratio: float, seed: int):
-    """Split a list of record dicts into train and val at the record level.
+def split_by_strat_fold(records):
+    """Split records using PTB-XL's patient-level strat_fold column.
 
-    Splitting at the record level (not the window level) ensures:
-    - No temporal leakage between train and val windows
-    - Val windows are never augmented
-    - The split is deterministic given the same seed
+    strat_fold (1-10) is a stratified, patient-level split provided by the
+    PTB-XL authors — using it (instead of a random per-record shuffle)
+    guarantees no patient's records leak across train/val/test.
+
+    Standard PTB-XL protocol: folds 1-8 train, fold 9 val, fold 10 test.
 
     Args:
         records: list of record dicts from PTBXLECGLoader.get_records()
-        val_ratio: fraction of records to use for validation
-        seed: random seed for the shuffle
+            (must contain a "strat_fold" key)
 
     Returns:
-        train_records, val_records
+        train_records, val_records, test_records
     """
-    rng = random.Random(seed)
-    shuffled = records[:]
-    rng.shuffle(shuffled)
+    train_records = [r for r in records if r["strat_fold"] <= 8]
+    val_records = [r for r in records if r["strat_fold"] == 9]
+    test_records = [r for r in records if r["strat_fold"] == 10]
 
-    n_val = int(len(shuffled) * val_ratio)
-    val_records = shuffled[:n_val]
-    train_records = shuffled[n_val:]
-
-    return train_records, val_records
+    return train_records, val_records, test_records
 
 
-def compute_class_weights(dataset, num_classes: int, device):
-    """Compute inverse-frequency class weights from a dataset's labels.
+def compute_pos_weights(dataset, num_classes: int, device):
+    """Compute positive class weights for BCEWithLogitsLoss.
 
-    Returns a tensor of shape (num_classes,) normalized so the mean weight
-    is 1.0. Used to down-weight majority classes in CrossEntropyLoss.
+    pos_weight[c] = num_negative_samples[c] / num_positive_samples[c]
+
+    This upweights the loss on positive examples for rare classes (e.g.
+    HYP), counteracting PTB-XL's class imbalance.
 
     Args:
-        dataset: ECGWindowDataset (labels are pre-encoded integers)
+        dataset: ECGWindowDataset (labels are multi-hot float tensors)
         num_classes: total number of classes
         device: torch device to place the weight tensor on
 
     Returns:
-        class_weights: FloatTensor of shape (num_classes,)
+        pos_weights: FloatTensor of shape (num_classes,)
     """
-    # Collect all labels without applying transforms
-    labels = torch.tensor([label for _, label in dataset.samples], dtype=torch.long)
+    all_labels = torch.stack([label for _, label in dataset.samples])  # (N, num_classes)
 
-    counts = torch.bincount(labels, minlength=num_classes).float()
-    weights = counts.sum() / (counts + 1e-8)
-    weights = weights / weights.mean()
+    pos_counts = all_labels.sum(dim=0)
+    neg_counts = len(dataset) - pos_counts
+    pos_weights = neg_counts / (pos_counts + 1e-8)
 
-    return weights.to(device)
+    return pos_weights.to(device)
 
 
 def main():
@@ -132,8 +129,12 @@ def main():
     loader = PTBXLECGLoader(DATA_ROOT, sampling_rate=SAMPLING_RATE)
     all_records = loader.get_records()
 
-    train_records, val_records = split_records(all_records, VAL_RATIO, RANDOM_SEED)
-    print(f"[DATA] Train records: {len(train_records)} | Val records: {len(val_records)}")
+    train_records, val_records, test_records = split_by_strat_fold(all_records)
+    print(
+        f"[DATA] Train records: {len(train_records)} | "
+        f"Val records: {len(val_records)} | "
+        f"Test records: {len(test_records)} (held out, folds 1-8/9/10)"
+    )
 
     # Training augmentation pipeline
     # Applied to train windows only — val receives no augmentation.
@@ -182,11 +183,11 @@ def main():
     )
 
     # ------------------------------------------------------------------
-    # Class weights (computed from training set only)
+    # Pos weights for BCEWithLogitsLoss (computed from training set only)
     # ------------------------------------------------------------------
-    print("[INFO] Computing class weights...")
-    class_weights = compute_class_weights(train_dataset, NUM_CLASSES, DEVICE)
-    print(f"[INFO] Class weights: {[f'{w:.3f}' for w in class_weights.tolist()]}")
+    print("[INFO] Computing pos_weights...")
+    pos_weights = compute_pos_weights(train_dataset, NUM_CLASSES, DEVICE)
+    print(f"[INFO] Pos weights: {[f'{w:.3f}' for w in pos_weights.tolist()]}")
 
     # ------------------------------------------------------------------
     # Model, optimizer, scheduler
@@ -210,13 +211,14 @@ def main():
         scheduler=scheduler,
         device=DEVICE,
         num_classes=NUM_CLASSES,
-        class_weights=class_weights,
+        pos_weights=pos_weights,
     )
 
     # ------------------------------------------------------------------
     # Training loop
     # ------------------------------------------------------------------
     best_f1 = 0.0
+    epochs_without_improvement = 0
     history = {
         "epoch": [],
         "train_loss": [],
@@ -249,9 +251,18 @@ def main():
 
         if val_metrics["macro_f1"] > best_f1:
             best_f1 = val_metrics["macro_f1"]
+            epochs_without_improvement = 0
             ckpt_path = os.path.join(CHECKPOINT_DIR, "best_model.pt")
             torch.save(model.state_dict(), ckpt_path)
             print(f"  [Saved] New best model — Macro-F1 = {best_f1:.4f}")
+        else:
+            epochs_without_improvement += 1
+            if epochs_without_improvement >= EARLY_STOPPING_PATIENCE:
+                print(
+                    f"\n[EARLY STOPPING] Val Macro-F1 has not improved for "
+                    f"{EARLY_STOPPING_PATIENCE} epochs. Stopping at epoch {epoch + 1}."
+                )
+                break
 
     # ------------------------------------------------------------------
     # Save training history

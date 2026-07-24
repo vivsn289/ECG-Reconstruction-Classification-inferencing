@@ -14,6 +14,7 @@ sys.path.insert(0, os.path.dirname(__file__))
 from configs.config_1d import (
     DATA_ROOT, CHECKPOINT_DIR, NUM_CLASSES, WINDOW_SIZE, STRIDE,
     LABEL_DECODER, EXPLAIN_RECORD_INDICES, IG_STEPS, SAMPLING_RATE,
+    PREDICTION_THRESHOLD,
 )
 from src_ecg_1d.models.ecg_model import ECGClassifier1D
 from src_ecg_1d.data.loaders import PTBXLECGLoader
@@ -56,7 +57,7 @@ def explain_and_save(model, loader, records, record_idx):
 
         with torch.no_grad():
             logits, _ = model(x, return_attention=True)
-            probs = torch.softmax(logits, dim=1)
+            probs = torch.sigmoid(logits)  # independent per-class probs, multi-label
 
         score = 1.0 - probs[0, 0].item()
         if score > best_abnormal_score:
@@ -77,9 +78,14 @@ def explain_and_save(model, loader, records, record_idx):
     global_ig -= global_ig.min()
     global_ig /= (global_ig.max() + 1e-8)
 
-    probs = torch.softmax(best_logits, dim=1)
-    pred_class = probs.argmax(dim=1).item()
-    print(f"  Predicted: {LABEL_DECODER[pred_class]} | Probs: {probs.cpu().numpy()}")
+    probs = torch.sigmoid(best_logits)
+    pred_class = probs.argmax(dim=1).item()  # highest-probability class, for the plot title
+    above_threshold = (probs > PREDICTION_THRESHOLD).nonzero(as_tuple=True)[1].tolist()
+    predicted_labels = [LABEL_DECODER[c] for c in above_threshold]
+    print(
+        f"  Predicted: {LABEL_DECODER[pred_class]} | Above threshold: {predicted_labels} "
+        f"| Probs: {probs.cpu().numpy()}"
+    )
 
     fig, ax1 = plt.subplots(figsize=(14, 4))
     ax1.plot(ecg[0], color="black", linewidth=1, label="ECG (Lead I)")

@@ -32,6 +32,7 @@ from configs.config_1d import (
     EXPLAIN_RECORD_INDICES,
     IG_STEPS,
     SAMPLING_RATE,
+    PREDICTION_THRESHOLD,
 )
 from src_ecg_1d.models.ecg_model import ECGClassifier1D
 from src_ecg_1d.data.loaders import PTBXLECGLoader
@@ -121,7 +122,7 @@ def explain_record(model, loader, records, record_idx):
 
         with torch.no_grad():
             logits, _ = model(x, return_attention=True)
-            probs = torch.softmax(logits, dim=1)
+            probs = torch.sigmoid(logits)  # independent per-class probs, multi-label
 
         # Track the window with the highest abnormality signal (least NORM prob)
         abnormal_score = 1.0 - probs[0, 0].item()
@@ -157,12 +158,15 @@ def explain_record(model, loader, records, record_idx):
     global_ig /= (global_ig.max() + 1e-8)
 
     # Final prediction: from the most abnormal window
-    probs = torch.softmax(best_logits, dim=1)
-    pred_class = probs.argmax(dim=1).item()
+    probs = torch.sigmoid(best_logits)
+    pred_class = probs.argmax(dim=1).item()  # highest-probability class, for the plot title
+    above_threshold = (probs > PREDICTION_THRESHOLD).nonzero(as_tuple=True)[1].tolist()
+    predicted_labels = [LABEL_DECODER[c] for c in above_threshold]
 
     print("[RESULT]")
-    print(f"  Predicted label : {LABEL_DECODER[pred_class]}")
-    print(f"  Probabilities   : {probs.cpu().numpy()}")
+    print(f"  Primary label      : {LABEL_DECODER[pred_class]}")
+    print(f"  Above threshold    : {predicted_labels}")
+    print(f"  Probabilities      : {probs.cpu().numpy()}")
 
     # Plot ECG signal (Lead I) with IG overlay on secondary axis
     fig, ax1 = plt.subplots(figsize=(14, 4))
